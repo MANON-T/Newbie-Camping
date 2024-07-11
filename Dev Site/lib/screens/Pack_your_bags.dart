@@ -400,7 +400,7 @@ class _PackYourBagsState extends State<PackYourBags> {
                       const Row(
                         children: [
                           Text(
-                            'จองที่พัก ',
+                            'ค่าที่พัก ',
                             style: TextStyle(
                               color: kSpotifyTextPrimary,
                               fontSize: 24.0,

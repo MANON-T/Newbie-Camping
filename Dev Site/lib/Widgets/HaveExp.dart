@@ -19,7 +19,7 @@ class HaveExp extends StatelessWidget {
           ),
           color: Colors.white,
         ),
-        height: MediaQuery.of(context).size.height * 0.3,
+        height: MediaQuery.of(context).size.height * 0.35,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

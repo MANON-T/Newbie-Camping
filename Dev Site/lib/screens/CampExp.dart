@@ -24,7 +24,7 @@ class CampExp extends StatelessWidget {
               ),
               const Text(
                 "เลือกตัวเลือกประสบการณ์เพื่อให้ระบบรู้จักคุณมากขึ้น",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                // style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(
                 height: 20,

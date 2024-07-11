@@ -438,7 +438,7 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
                 },
                 icon: const Icon(Icons.shopping_bag, color: Color(0xFFFFFFFF)),
                 label: const Text(
-                  'คำนวนค่าใช้จ่าย & จัดสัมภาระ',
+                  'เตรียมความพร้อม',
                   style: TextStyle(
                     color: Color(0xFFFFFFFF),
                   ),

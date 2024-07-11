@@ -89,7 +89,7 @@ class _BackpackState extends State<Backpack> {
             Navigator.pop(context);
           },
         ),
-        title: Text(
+        title: const Text(
           'จัดสัมภาระ',
           style: TextStyle(color: Colors.white),
         ),

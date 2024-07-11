@@ -27,6 +27,7 @@ class Backpack extends StatefulWidget {
 
 class _BackpackState extends State<Backpack> {
   String backpackStatus = "กำลังโหลด...";
+  List<String> backpackItems = [];
 
   @override
   void initState() {
@@ -47,25 +48,28 @@ class _BackpackState extends State<Backpack> {
       if (backpack.isEmpty) {
         setState(() {
           backpackStatus = "ยังไม่ได้จัดสัมภาระ";
+          backpackItems = _getBackpackItems("ยังไม่ได้จัดสัมภาระ");
         });
       } else {
         setState(() {
           backpackStatus = backpack;
+          backpackItems = _getBackpackItems(backpack);
         });
       }
     } catch (e) {
       setState(() {
         backpackStatus = "เกิดข้อผิดพลาดในการโหลดข้อมูล";
+        backpackItems = ["เกิดข้อผิดพลาดในการโหลดข้อมูล"];
       });
     }
   }
 
-  List<String> _getBackpackItems() {
+  List<String> _getBackpackItems(String status) {
     if (widget.campsite == null) {
       return [];
     }
 
-    switch (backpackStatus) {
+    switch (status) {
       case "สำหรับมือใหม่":
         return widget.campsite!.newbie_backpack ?? [];
       case "สำหรับทั่วไป แบบ 1":
@@ -75,13 +79,12 @@ class _BackpackState extends State<Backpack> {
       case "ยังไม่ได้จัดสัมภาระ":
         return ["ยังไม่ได้จัดสัมภาระ"];
       default:
-        return [backpackStatus];
+        return [status];
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> backpackItems = _getBackpackItems();
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Container(

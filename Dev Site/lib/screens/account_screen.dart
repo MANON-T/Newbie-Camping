@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import '../service/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../service/auth_service.dart';
 import 'package:flutter_application_4/models/campsite_model.dart';
-import 'package:flutter_application_4/screens/CampGuide.dart'; // Import your CampGuide screen
+import 'package:flutter_application_4/screens/CampGuide.dart';
 import 'package:flutter_application_4/Widgets/backpack.dart';
 import 'package:flutter_application_4/Widgets/budget.dart';
 
-// ใช้ชุดสีของ Spotify
 const kSpotifyBackground = Color(0xFF121212);
 const kSpotifyAccent = Color(0xFF1DB954);
 const kSpotifyTextPrimary = Color(0xFFFFFFFF);
@@ -124,7 +123,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: const Text(
-                          'บัตรชาวเคมป์',
+                          'บัตรชาวแคมป์',
                           style: TextStyle(color: Colors.white, fontSize: 18.0),
                         ),
                       ),
@@ -166,7 +165,6 @@ class _AccountScreenState extends State<AccountScreen> {
                           style: TextStyle(color: Colors.white, fontSize: 18.0),
                         ),
                       ),
-                      // เพิ่มการ์ดอื่นๆ หรือเนื้อหาเพิ่มเติมที่นี่
                       Budget(
                           auth: widget.auth,
                           user: widget.user,
@@ -249,14 +247,17 @@ class _AccountScreenState extends State<AccountScreen> {
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.5), // กำหนดสีใสโปร่งใส
-                      borderRadius: BorderRadius.circular(10), // กำหนดขอบมน
+                      color: Colors.white.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(
-                      userName,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 20.0,
+                    child: GestureDetector(
+                      onTap: () => _showEditNameDialog(context, userName),
+                      child: Text(
+                        userName,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                        ),
                       ),
                     ),
                   ),
@@ -274,8 +275,8 @@ class _AccountScreenState extends State<AccountScreen> {
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.5), // กำหนดสีใสโปร่งใส
-                      borderRadius: BorderRadius.circular(10), // กำหนดขอบมน
+                      color: Colors.white.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
                       userEmail,
@@ -291,6 +292,65 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showEditNameDialog(BuildContext context, String currentName) {
+    final TextEditingController _nameController =
+        TextEditingController(text: currentName);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'แก้ไขชื่อผู้ใช้',
+            style: TextStyle(color: kSpotifyTextPrimary),
+          ),
+          content: TextField(
+            controller: _nameController,
+            decoration: const InputDecoration(
+              labelText: 'ชื่อผู้ใช้ใหม่',
+              labelStyle: TextStyle(color: kSpotifyTextSecondary),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: kSpotifyAccent),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: kSpotifyAccent),
+              ),
+            ),
+            style: const TextStyle(color: kSpotifyTextPrimary),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child:
+                  const Text('ยกเลิก', style: TextStyle(color: kSpotifyAccent)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child:
+                  const Text('ยืนยัน', style: TextStyle(color: kSpotifyAccent)),
+              onPressed: () async {
+                String newName = _nameController.text.trim();
+                if (newName.isNotEmpty) {
+                  await FirebaseFirestore.instance
+                      .collection('user')
+                      .doc(widget.user)
+                      .update({'name': newName});
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+          backgroundColor: kSpotifyBackground,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+            side: const BorderSide(color: kSpotifyAccent),
+          ),
+        );
+      },
     );
   }
 

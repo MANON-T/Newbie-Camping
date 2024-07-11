@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_4/models/campsite_model.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -25,10 +25,12 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final Location _locationController = Location();
-  final Completer<GoogleMapController> _mapController = Completer<GoogleMapController>();
+  final Completer<GoogleMapController> _mapController =
+      Completer<GoogleMapController>();
 
   LatLng? _pAppPlex;
   LatLng? _currentP;
+  Set<Marker> _markers = {};
 
   Map<PolylineId, Polyline> polylines = {};
   BitmapDescriptor? _currentLocationMarkerIcon;
@@ -46,12 +48,13 @@ class _MapScreenState extends State<MapScreen> {
 
     getLocationUpdate();
     _setCustomMarkerIcon();
+    _fetchCampsiteLocations();
   }
 
   void _setCustomMarkerIcon() async {
     _currentLocationMarkerIcon = await BitmapDescriptor.asset(
       const ImageConfiguration(size: Size(48, 48)),
-      'images/walk.png',
+      'images/verified.png',
     );
   }
 
@@ -75,13 +78,16 @@ class _MapScreenState extends State<MapScreen> {
           _currentP == null
               ? const Center(child: CircularProgressIndicator())
               : GoogleMap(
-                  onMapCreated: (GoogleMapController controller) => _mapController.complete(controller),
-                  initialCameraPosition: CameraPosition(target: _currentP!, zoom: 13),
+                  onMapCreated: (GoogleMapController controller) =>
+                      _mapController.complete(controller),
+                  initialCameraPosition:
+                      CameraPosition(target: _currentP!, zoom: 6),
                   markers: {
                     if (_currentP != null)
                       Marker(
                         markerId: const MarkerId("_currentLocation"),
-                        icon: _currentLocationMarkerIcon ?? BitmapDescriptor.defaultMarker,
+                        icon: _currentLocationMarkerIcon ??
+                            BitmapDescriptor.defaultMarker,
                         position: _currentP!,
                       ),
                     if (_pAppPlex != null)
@@ -90,14 +96,16 @@ class _MapScreenState extends State<MapScreen> {
                         icon: BitmapDescriptor.defaultMarker,
                         position: _pAppPlex!,
                       ),
-                  },
+                  }.union(_markers),
                   polylines: Set<Polyline>.of(polylines.values),
                 ),
           Positioned(
             bottom: 20,
             left: 20,
             child: FloatingActionButton(
-              onPressed: _currentP != null ? () => _cameraToPosition(_currentP!) : null,
+              onPressed: _currentP != null
+                  ? () => _cameraToPosition(_currentP!)
+                  : null,
               backgroundColor: kSpotifyAccent,
               child: const Icon(Icons.my_location, color: kSpotifyTextPrimary),
             ),
@@ -110,7 +118,8 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _cameraToPosition(LatLng pos) async {
     final GoogleMapController controller = await _mapController.future;
     CameraPosition newCameraPosition = CameraPosition(target: pos, zoom: 13);
-    await controller.animateCamera(CameraUpdate.newCameraPosition(newCameraPosition));
+    await controller
+        .animateCamera(CameraUpdate.newCameraPosition(newCameraPosition));
   }
 
   Future<void> getLocationUpdate() async {
@@ -133,10 +142,13 @@ class _MapScreenState extends State<MapScreen> {
       }
     }
 
-    _locationController.onLocationChanged.listen((LocationData currentLocation) {
-      if (currentLocation.latitude != null && currentLocation.longitude != null) {
+    _locationController.onLocationChanged
+        .listen((LocationData currentLocation) {
+      if (currentLocation.latitude != null &&
+          currentLocation.longitude != null) {
         setState(() {
-          _currentP = LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          _currentP =
+              LatLng(currentLocation.latitude!, currentLocation.longitude!);
           if (_currentP != null) {
             getPolylinePoints().then((coordinate) {
               generatePolylineFromPoint(coordinate);
@@ -182,6 +194,29 @@ class _MapScreenState extends State<MapScreen> {
     );
     setState(() {
       polylines[id] = polyline;
+    });
+  }
+
+  Future<void> _fetchCampsiteLocations() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference campsites = firestore.collection('campsite');
+
+    campsites.get().then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        GeoPoint location = doc['location_coordinates'];
+        LatLng position = LatLng(location.latitude, location.longitude);
+
+        setState(() {
+          _markers.add(Marker(
+            markerId: MarkerId(doc.id),
+            position: position,
+            infoWindow: InfoWindow(
+              title: doc['name'],
+            ),
+            icon: BitmapDescriptor.defaultMarker,
+          ));
+        });
+      });
     });
   }
 }
