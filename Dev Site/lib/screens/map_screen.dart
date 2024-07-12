@@ -30,7 +30,7 @@ class _MapScreenState extends State<MapScreen> {
 
   LatLng? _pAppPlex;
   LatLng? _currentP;
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
 
   Map<PolylineId, Polyline> polylines = {};
   BitmapDescriptor? _currentLocationMarkerIcon;
@@ -202,7 +202,7 @@ class _MapScreenState extends State<MapScreen> {
     CollectionReference campsites = firestore.collection('campsite');
 
     campsites.get().then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
+      for (var doc in querySnapshot.docs) {
         GeoPoint location = doc['location_coordinates'];
         LatLng position = LatLng(location.latitude, location.longitude);
 
@@ -216,7 +216,7 @@ class _MapScreenState extends State<MapScreen> {
             icon: BitmapDescriptor.defaultMarker,
           ));
         });
-      });
+      }
     });
   }
 }

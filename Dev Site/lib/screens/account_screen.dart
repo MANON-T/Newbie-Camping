@@ -107,7 +107,9 @@ class _AccountScreenState extends State<AccountScreen> {
 
                   var userData = snapshot.data!.data() as Map<String, dynamic>;
                   var userName = userData['name'] ?? 'ไม่พบชื่อผู้ใช้';
-                  var userEmail = userData['email'] ?? 'ไม่พบอีเมลผู้ใช้';
+                  // var userEmail = userData['email'] ?? 'ไม่พบอีเมลผู้ใช้';
+                  var userTags =
+                      List<String>.from(userData['tag'] ?? []); // ดึงข้อมูล tag
 
                   return ListView(
                     children: [
@@ -127,7 +129,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           style: TextStyle(color: Colors.white, fontSize: 18.0),
                         ),
                       ),
-                      _buildUserCard(userName, userEmail),
+                      _buildUserCard(userName, userTags),
                       const SizedBox(
                         height: 10,
                       ),
@@ -166,14 +168,15 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                       ),
                       Budget(
-                          auth: widget.auth,
-                          user: widget.user,
-                          campingFee: widget.campingFee,
-                          house: widget.house,
-                          campsite: widget.campsite,
-                          enterFee: widget.enterFee,
-                          tentRental: widget.tentRental,
-                          totalCost: widget.totalCost)
+                        auth: widget.auth,
+                        user: widget.user,
+                        // campingFee: widget.campingFee,
+                        // house: widget.house,
+                        campsite: widget.campsite,
+                        // enterFee: widget.enterFee,
+                        // tentRental: widget.tentRental,
+                        // totalCost: widget.totalCost
+                      )
                     ],
                   );
                 },
@@ -182,7 +185,7 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  Widget _buildUserCard(String userName, String userEmail) {
+  Widget _buildUserCard(String userName, List<String> userTags) {
     return Card(
       color: Colors.transparent,
       shape: RoundedRectangleBorder(
@@ -264,29 +267,52 @@ class _AccountScreenState extends State<AccountScreen> {
                 ],
               ),
               const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.email,
-                    color: kSpotifyAccent,
-                    size: 24.0,
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(10),
+              Flexible(
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.tag,
+                      color: kSpotifyAccent,
+                      size: 24.0,
                     ),
-                    child: Text(
-                      userEmail,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 20.0,
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          // shrinkWrap: true,
+                          child: Row(
+                            children: [
+                              for (var i = 0; i < userTags.length; i++)
+                                Container(
+                                  margin: const EdgeInsets.only(right: 8.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4.0, horizontal: 8.0),
+                                  decoration: BoxDecoration(
+                                    color: getTagColor(
+                                        i), // Use getTagColor function to get the color
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  child: Text(
+                                    userTags[i],
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ],
+                    )
+                  ],
+                ),
               ),
             ],
           ),
@@ -295,8 +321,25 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
+  Color getTagColor(int index) {
+  List<Color> colors = [
+    Colors.red,
+    Colors.green,
+    Colors.blue,
+    Colors.yellow,
+    Colors.purple,
+    Colors.orange,
+    Colors.pink,
+    Colors.teal,
+    Colors.indigo,
+    Colors.lime,
+  ];
+  
+  return colors[index % colors.length]; // Use the modulo operator to wrap around the list of colors
+}
+
   void _showEditNameDialog(BuildContext context, String currentName) {
-    final TextEditingController _nameController =
+    final TextEditingController nameController =
         TextEditingController(text: currentName);
 
     showDialog(
@@ -308,7 +351,7 @@ class _AccountScreenState extends State<AccountScreen> {
             style: TextStyle(color: kSpotifyTextPrimary),
           ),
           content: TextField(
-            controller: _nameController,
+            controller: nameController,
             decoration: const InputDecoration(
               labelText: 'ชื่อผู้ใช้ใหม่',
               labelStyle: TextStyle(color: kSpotifyTextSecondary),
@@ -333,7 +376,7 @@ class _AccountScreenState extends State<AccountScreen> {
               child:
                   const Text('ยืนยัน', style: TextStyle(color: kSpotifyAccent)),
               onPressed: () async {
-                String newName = _nameController.text.trim();
+                String newName = nameController.text.trim();
                 if (newName.isNotEmpty) {
                   await FirebaseFirestore.instance
                       .collection('user')

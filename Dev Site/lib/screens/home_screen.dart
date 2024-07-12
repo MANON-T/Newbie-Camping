@@ -75,6 +75,12 @@ class _HomeScreenState extends State<HomeScreen> {
             .get();
 
         String name = 'รอข้อมูล'; // ค่าเริ่มต้นสำหรับ name
+        double totalCost = 0.0;
+        double enterFee = 0.0;
+        double tentRental = 0.0;
+        double house = 0.0;
+        double campingFee = 0.0;
+        String campsite = '';
 
         if (snapshot.exists) {
           // ถ้ามีข้อมูลใน Firestore ใช้ข้อมูลที่มีอยู่
@@ -83,6 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
               name; // ถ้ามี name ใน Firestore ให้ใช้ข้อมูลที่มีอยู่
           email = data['email'] ??
               email; // ถ้ามี email ใน Firestore ให้ใช้ข้อมูลที่มีอยู่
+          totalCost = data['totalCost'] ?? totalCost;
+          enterFee = data['enterFee'] ?? enterFee;
+          tentRental = data['tentRental'] ?? tentRental;
+          house = data['house'] ?? house;
+          campingFee = data['campingFee'] ?? campingFee;
+          campsite = data['campsite'] ?? campsite;
         }
 
         // ตั้งค่าข้อมูลผู้ใช้เบื้องต้น
@@ -91,6 +103,13 @@ class _HomeScreenState extends State<HomeScreen> {
           name: name,
           email: email,
           exp: widget.Exp.toString(), // ตรวจสอบ Exp ที่ได้รับมา
+          tag: List.empty(),
+          campingFee: campingFee,
+          campsite: campsite,
+          enterFee: enterFee,
+          house: house,
+          tentRental: tentRental,
+          totalCost: totalCost
         );
 
         await db.setUser(user: user);

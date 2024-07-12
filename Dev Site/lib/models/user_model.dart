@@ -1,9 +1,28 @@
 class UserModel {
   String id;
   String exp;
+  double totalCost;
+  double enterFee;
+  double tentRental;
+  double house;
+  double campingFee;
+  String campsite;
   final String name;
   final String email;
-  UserModel({required this.id, required this.exp , required this.name , required this.email});
+  List<String> tag; // เพิ่มตัวแปร tag ที่เป็น array
+
+  UserModel(
+      {required this.id,
+      required this.exp,
+      required this.name,
+      required this.email,
+      required this.tag,
+      required this.campingFee,
+      required this.campsite,
+      required this.enterFee,
+      required this.house,
+      required this.tentRental,
+      required this.totalCost}); // ปรับ constructor
 
   factory UserModel.fromMap(Map<String, dynamic>? user) {
     if (user != null) {
@@ -11,13 +30,45 @@ class UserModel {
       String exp = user['exp'];
       String name = user['name'];
       String email = user['email'];
-      return UserModel(id: id, exp: exp , name: name, email: email);
+      double totalCost = user['totalCost'];
+      double enterFee = user['enterFee'];
+      double tentRental = user['tentRental'];
+      double house = user['house'];
+      double campingFee = user['campingFee'];
+      String campsite = user['campsite'];
+      List<String> tag =
+          List<String>.from(user['tag'] ?? []); // แปลง tag เป็น List<String>
+      return UserModel(
+          id: id,
+          exp: exp,
+          name: name,
+          email: email,
+          tag: tag,
+          campingFee: campingFee,
+          campsite: campsite,
+          enterFee: enterFee,
+          house: house,
+          tentRental: tentRental,
+          totalCost: totalCost);
     } else {
-      throw ArgumentError('Unexpected type for product');
+      throw ArgumentError('Unexpected type for user');
     }
   }
+
   Map<String, dynamic> toMap() {
-    return {'id': id, 'exp': exp , 'name': name, 'email': email};
+    return {
+      'id': id,
+      'exp': exp,
+      'name': name,
+      'email': email,
+      'tag': tag, // เพิ่ม tag ใน toMap
+      'campingFee': campingFee,
+      'campsite': campsite,
+      'enterFee': enterFee,
+      'house': house,
+      'tentRental': tentRental,
+      'totalCost': totalCost
+    };
   }
 
   Map<String, dynamic> toJson() {
@@ -27,7 +78,14 @@ class UserModel {
       'id': id,
       'exp': exp, // ตรวจสอบว่ามีค่าถูกต้อง
       'name': name,
-      'email': email
+      'email': email,
+      'tag': tag, // เพิ่ม tag ใน toJson
+      'campingFee': campingFee,
+      'campsite': campsite,
+      'enterFee': enterFee,
+      'house': house,
+      'tentRental': tentRental,
+      'totalCost': totalCost
     };
   }
 }

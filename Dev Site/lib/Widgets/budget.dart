@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../service/auth_service.dart';
 import 'package:flutter_application_4/models/campsite_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Budget extends StatefulWidget {
-  final double totalCost;
-  final double enterFee;
-  final double tentRental;
-  final double house;
-  final double campingFee;
   final AuthService auth;
   final String user;
   final CampsiteModel? campsite;
@@ -17,12 +13,7 @@ class Budget extends StatefulWidget {
     super.key,
     required this.auth,
     required this.user,
-    required this.campingFee,
-    required this.house,
     required this.campsite,
-    required this.enterFee,
-    required this.tentRental,
-    required this.totalCost,
   });
 
   @override
@@ -30,23 +21,52 @@ class Budget extends StatefulWidget {
 }
 
 class _BudgetState extends State<Budget> {
+  late double totalCost = 0.0;
+  late double enterFee = 0.0;
+  late double tentRental = 0.0;
+  late double house = 0.0;
+  late double campingFee = 0.0;
+  late String campsitename = 'Not selected';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(widget.user)
+        .get();
+
+    setState(() {
+      totalCost = userDoc['totalCost'] ?? 0;
+      enterFee = userDoc['enterFee'] ?? 0;
+      tentRental = userDoc['tentRental'] ?? 0;
+      house = userDoc['house'] ?? 0;
+      campingFee = userDoc['campingFee'] ?? 0;
+      campsitename = userDoc['campsite'] ?? 'Not selected';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Card(
-        color: Colors.black, // เปลี่ยนพื้นหลังเป็นสีดำ
+        color: Colors.black,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Campsite: ${widget.campsite?.name ?? 'Not selected'}',
+                campsitename,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white, // สีของข้อความเป็นสีขาว
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(height: 20),
@@ -59,7 +79,7 @@ class _BudgetState extends State<Budget> {
                         x: 0,
                         barRods: [
                           BarChartRodData(
-                            toY: widget.totalCost,
+                            toY: totalCost,
                             color: Colors.blue,
                             width: 20,
                             borderRadius: BorderRadius.circular(5),
@@ -71,7 +91,7 @@ class _BudgetState extends State<Budget> {
                         x: 1,
                         barRods: [
                           BarChartRodData(
-                            toY: widget.enterFee,
+                            toY: enterFee,
                             color: Colors.orange,
                             width: 20,
                             borderRadius: BorderRadius.circular(5),
@@ -83,7 +103,7 @@ class _BudgetState extends State<Budget> {
                         x: 2,
                         barRods: [
                           BarChartRodData(
-                            toY: widget.tentRental,
+                            toY: tentRental,
                             color: Colors.green,
                             width: 20,
                             borderRadius: BorderRadius.circular(5),
@@ -95,7 +115,7 @@ class _BudgetState extends State<Budget> {
                         x: 3,
                         barRods: [
                           BarChartRodData(
-                            toY: widget.house,
+                            toY: house,
                             color: Colors.red,
                             width: 20,
                             borderRadius: BorderRadius.circular(5),
@@ -107,7 +127,7 @@ class _BudgetState extends State<Budget> {
                         x: 4,
                         barRods: [
                           BarChartRodData(
-                            toY: widget.campingFee,
+                            toY: campingFee,
                             color: Colors.purple,
                             width: 20,
                             borderRadius: BorderRadius.circular(5),
@@ -132,35 +152,35 @@ class _BudgetState extends State<Budget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'ค่าใช้จ่ายรวม: ฿${widget.totalCost.toStringAsFixed(2)}',
+                    'ค่าใช้จ่ายรวม: ฿${totalCost.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.blue,
                     ),
                   ),
                   Text(
-                    'ค่าเข้ารวม: ฿${widget.enterFee.toStringAsFixed(2)}',
+                    'ค่าเข้ารวม: ฿${enterFee.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.orange,
                     ),
                   ),
                   Text(
-                    'ค่าเช้าเต้นรวม: ฿${widget.tentRental.toStringAsFixed(2)}',
+                    'ค่าเช้าเต้นรวม: ฿${tentRental.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.green,
                     ),
                   ),
                   Text(
-                    'ค่าเช่าบ้านพักรวม: ฿${widget.house.toStringAsFixed(2)}',
+                    'ค่าเช่าบ้านพักรวม: ฿${house.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.red,
                     ),
                   ),
                   Text(
-                    'ค่ากางเต้น: ฿${widget.campingFee.toStringAsFixed(2)}',
+                    'ค่ากางเต้น: ฿${campingFee.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.purple,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_4/models/campsite_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_4/models/campsite_model.dart';
 
 // ใช้ชุดสีของ Spotify
 const kSpotifyBackground = Color(0xFF121212);
@@ -27,6 +27,7 @@ class Backpack extends StatefulWidget {
 
 class _BackpackState extends State<Backpack> {
   String backpackStatus = "กำลังโหลด...";
+  String campsiteName = "กำลังโหลด...";
   List<String> backpackItems = [];
 
   @override
@@ -37,24 +38,26 @@ class _BackpackState extends State<Backpack> {
 
   Future<void> _loadBackpackStatus() async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-          .instance
-          .collection('user')
-          .doc(widget.id)
-          .get();
+      DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc(widget.id)
+              .get();
 
-      String backpack = snapshot.data()?['backpack'] ?? '';
+      String backpack = userSnapshot.data()?['backpack'] ?? '';
+      String campsite = userSnapshot.data()?['campsite'] ?? '';
 
       if (backpack.isEmpty) {
         setState(() {
           backpackStatus = "ยังไม่ได้จัดสัมภาระ";
-          backpackItems = _getBackpackItems("ยังไม่ได้จัดสัมภาระ");
+          backpackItems = ["ยังไม่ได้จัดสัมภาระ"];
         });
       } else {
         setState(() {
           backpackStatus = backpack;
-          backpackItems = _getBackpackItems(backpack);
+          campsiteName = campsite;
         });
+        await _loadBackpackItems(campsite, backpack);
       }
     } catch (e) {
       setState(() {
@@ -64,22 +67,43 @@ class _BackpackState extends State<Backpack> {
     }
   }
 
-  List<String> _getBackpackItems(String status) {
-    if (widget.campsite == null) {
-      return [];
-    }
+  Future<void> _loadBackpackItems(
+      String campsiteName, String backpackStatus) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> campsiteSnapshot =
+          await FirebaseFirestore.instance
+              .collection('campsite')
+              .where('name', isEqualTo: campsiteName)
+              .get();
 
-    switch (status) {
-      case "สำหรับมือใหม่":
-        return widget.campsite!.newbie_backpack ?? [];
-      case "สำหรับทั่วไป แบบ 1":
-        return widget.campsite!.common_backpack1 ?? [];
-      case "สำหรับทั่วไป แบบ 2":
-        return widget.campsite!.common_backpack2 ?? [];
-      case "ยังไม่ได้จัดสัมภาระ":
-        return ["ยังไม่ได้จัดสัมภาระ"];
-      default:
-        return [status];
+      if (campsiteSnapshot.docs.isNotEmpty) {
+        DocumentSnapshot<Map<String, dynamic>> campsiteDoc =
+            campsiteSnapshot.docs.first;
+        Map<String, dynamic> campsiteData = campsiteDoc.data()!;
+
+        List<String> items;
+        if (backpackStatus == "สำหรับมือใหม่") {
+          items = List<String>.from(campsiteData['newbie_backpack'] ?? []);
+        } else if (backpackStatus == "สำหรับทั่วไป แบบ 1") {
+          items = List<String>.from(campsiteData['common_backpack1'] ?? []);
+        } else if (backpackStatus == "สำหรับทั่วไป แบบ 2") {
+          items = List<String>.from(campsiteData['common_backpack2'] ?? []);
+        } else {
+          items = ["ไม่พบข้อมูลสัมภาระ"];
+        }
+
+        setState(() {
+          backpackItems = items;
+        });
+      } else {
+        setState(() {
+          backpackItems = ["ไม่พบข้อมูลสถานที่ตั้งแคมป์"];
+        });
+      }
+    } catch (e) {
+      setState(() {
+        backpackItems = ["เกิดข้อผิดพลาดในการโหลดข้อมูล"];
+      });
     }
   }
 
