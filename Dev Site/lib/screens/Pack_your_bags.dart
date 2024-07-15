@@ -45,6 +45,14 @@ class _PackYourBagsState extends State<PackYourBags> {
   String? _houseSize;
   int _nightCount = 1;
 
+  // Add counters for tent and house sizes
+  int _smallTentCount = 0;
+  int _mediumTentCount = 0;
+  int _largeTentCount = 0;
+  int _smallHouseCount = 0;
+  int _mediumHouseCount = 0;
+  int _largeHouseCount = 0;
+
   Future<void> _saveBudget(
       String campsiteName,
       double totalCost,
@@ -66,13 +74,6 @@ class _PackYourBagsState extends State<PackYourBags> {
           'house': house,
           'campingFee': campingFee
         });
-
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Text('บันทึกข้อมูลค่าใช้จ่ายสำเร็จ: $campsiteName'),
-        //     backgroundColor: Colors.green,
-        //   ),
-        // );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -102,6 +103,54 @@ class _PackYourBagsState extends State<PackYourBags> {
     "แบบใหญ่ (8-10 คน)"
   ];
 
+  void _incrementTent(String size) {
+    setState(() {
+      if (size == "แบบเล็ก (2 คน)") {
+        _smallTentCount++;
+      } else if (size == "แบบกลาง (4 คน)") {
+        _mediumTentCount++;
+      } else if (size == "แบบใหญ่ (6 คน)") {
+        _largeTentCount++;
+      }
+    });
+  }
+
+  void _decrementTent(String size) {
+    setState(() {
+      if (size == "แบบเล็ก (2 คน)" && _smallTentCount > 0) {
+        _smallTentCount--;
+      } else if (size == "แบบกลาง (4 คน)" && _mediumTentCount > 0) {
+        _mediumTentCount--;
+      } else if (size == "แบบใหญ่ (6 คน)" && _largeTentCount > 0) {
+        _largeTentCount--;
+      }
+    });
+  }
+
+  void _incrementHouse(String size) {
+    setState(() {
+      if (size == "แบบเล็ก (2-3 คน)") {
+        _smallHouseCount++;
+      } else if (size == "แบบกลาง (4-6 คน)") {
+        _mediumHouseCount++;
+      } else if (size == "แบบใหญ่ (8-10 คน)") {
+        _largeHouseCount++;
+      }
+    });
+  }
+
+  void _decrementHouse(String size) {
+    setState(() {
+      if (size == "แบบเล็ก (2-3 คน)" && _smallHouseCount > 0) {
+        _smallHouseCount--;
+      } else if (size == "แบบกลาง (4-6 คน)" && _mediumHouseCount > 0) {
+        _mediumHouseCount--;
+      } else if (size == "แบบใหญ่ (8-10 คน)" && _largeHouseCount > 0) {
+        _largeHouseCount--;
+      }
+    });
+  }
+
   void _increment(int type) {
     setState(() {
       if (type == 1) {
@@ -128,6 +177,80 @@ class _PackYourBagsState extends State<PackYourBags> {
         _nightCount--;
       }
     });
+  }
+
+  Widget _buildTentCounter(String size, int count) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            size,
+            style: const TextStyle(
+              color: kSpotifyTextPrimary,
+              fontSize: 18.0,
+            ),
+          ),
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.remove, color: kSpotifyAccent),
+                onPressed: () => _decrementTent(size),
+              ),
+              Text(
+                '$count',
+                style: const TextStyle(
+                  color: kSpotifyTextPrimary,
+                  fontSize: 18.0,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.add, color: kSpotifyAccent),
+                onPressed: () => _incrementTent(size),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHouseCounter(String size, int count) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            size,
+            style: const TextStyle(
+              color: kSpotifyTextPrimary,
+              fontSize: 18.0,
+            ),
+          ),
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.remove, color: kSpotifyAccent),
+                onPressed: () => _decrementHouse(size),
+              ),
+              Text(
+                '$count',
+                style: const TextStyle(
+                  color: kSpotifyTextPrimary,
+                  fontSize: 18.0,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.add, color: kSpotifyAccent),
+                onPressed: () => _incrementHouse(size),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildCounter(String label, int count, int type) {
@@ -180,6 +303,35 @@ class _PackYourBagsState extends State<PackYourBags> {
     }
   }
 
+  double _TentRentalCost(double value) {
+    return value;
+  }
+
+  double _HouseCost(double value) {
+    return value;
+  }
+
+  double tentcost = 0.0;
+  double housecost = 0.0;
+
+  double calculateTotalCost() {
+    // Logic to calculate total cost goes here
+    // No need to declare tentcost and housecost again
+    tentcost = 0.0;
+    housecost = 0.0;
+
+    // Example calculation:
+    tentcost += _smallTentCount * widget.campsite.tent_rental[0] * _nightCount;
+    tentcost += _mediumTentCount * widget.campsite.tent_rental[1] * _nightCount;
+    tentcost += _largeTentCount * widget.campsite.tent_rental[2] * _nightCount;
+    housecost += _smallHouseCount * widget.campsite.house[0] * _nightCount;
+    housecost += _mediumHouseCount * widget.campsite.house[1] * _nightCount;
+    housecost += _largeHouseCount * widget.campsite.house[2] * _nightCount;
+
+    double totalcost = tentcost + housecost;
+    return totalcost;
+  }
+
   double _enterFeeCalculate() {
     return (_adultCount * widget.campsite.adultEntryFee) +
         (_childrenCount * widget.campsite.childEntryFee) +
@@ -221,10 +373,7 @@ class _PackYourBagsState extends State<PackYourBags> {
   }
 
   double _calculateTotalCost() {
-    return _enterFeeCalculate() +
-        _calculateTentRentalCost() +
-        _calculateHouseCost() +
-        _calculateCampingFee();
+    return _enterFeeCalculate() + calculateTotalCost() + _calculateCampingFee();
   }
 
   @override
@@ -431,7 +580,7 @@ class _PackYourBagsState extends State<PackYourBags> {
                         ),
                       ),
                       Text(
-                        'บ้านพัก: ${widget.campsite.accommodationAvailable ? "ให้บริการ" : "ไม่มีบริการ"}',
+                        'เช่าบ้านพัก: ${widget.campsite.accommodationAvailable ? "ให้บริการ" : "ไม่มีบริการ"}',
                         style: const TextStyle(
                           color: kSpotifyTextSecondary,
                           fontSize: 14.0,
@@ -486,36 +635,21 @@ class _PackYourBagsState extends State<PackYourBags> {
                       if (_campingChecked &&
                           _rentTentChecked &&
                           widget.campsite.tentService)
-                        DropdownButton<String>(
-                          value: _tentSize,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _tentSize = newValue;
-                            });
-                          },
-                          hint: const Text(
-                            "เลือกขนาดเต็นท์",
-                            style: TextStyle(
-                              color: kSpotifyTextSecondary,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                          items: availableTentSizes.map((String size) {
-                            return DropdownMenuItem<String>(
-                              value: size,
-                              child: Text(
-                                size,
-                                style:
-                                    const TextStyle(color: kSpotifyTextPrimary),
-                              ),
-                            );
+                        Column(
+                          children: availableTentSizes.map((size) {
+                            int count = 0;
+                            if (size == "แบบเล็ก (2 คน)")
+                              count = _smallTentCount;
+                            if (size == "แบบกลาง (4 คน)")
+                              count = _mediumTentCount;
+                            if (size == "แบบใหญ่ (6 คน)")
+                              count = _largeTentCount;
+                            return _buildTentCounter(size, count);
                           }).toList(),
-                          dropdownColor: kSpotifyHighlight,
-                          iconEnabledColor: kSpotifyAccent,
                         ),
                       CheckboxListTile(
                         title: const Text(
-                          'บ้านพัก',
+                          'เช้าบ้านพัก',
                           style: TextStyle(
                             color: kSpotifyTextPrimary,
                             fontSize: 18.0,
@@ -534,32 +668,17 @@ class _PackYourBagsState extends State<PackYourBags> {
                       ),
                       if (_houseChecked &&
                           widget.campsite.accommodationAvailable)
-                        DropdownButton<String>(
-                          value: _houseSize,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _houseSize = newValue;
-                            });
-                          },
-                          hint: const Text(
-                            "เลือกขนาดบ้าน",
-                            style: TextStyle(
-                              color: kSpotifyTextSecondary,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                          items: availableHouseSizes.map((String size) {
-                            return DropdownMenuItem<String>(
-                              value: size,
-                              child: Text(
-                                size,
-                                style:
-                                    const TextStyle(color: kSpotifyTextPrimary),
-                              ),
-                            );
+                        Column(
+                          children: availableHouseSizes.map((size) {
+                            int count = 0;
+                            if (size == "แบบเล็ก (2-3 คน)")
+                              count = _smallHouseCount;
+                            if (size == "แบบกลาง (4-6 คน)")
+                              count = _mediumHouseCount;
+                            if (size == "แบบใหญ่ (8-10 คน)")
+                              count = _largeHouseCount;
+                            return _buildHouseCounter(size, count);
                           }).toList(),
-                          dropdownColor: kSpotifyHighlight,
-                          iconEnabledColor: kSpotifyAccent,
                         ),
                     ],
                   ),
@@ -633,23 +752,65 @@ class _PackYourBagsState extends State<PackYourBags> {
                             fontSize: 16.0,
                           ),
                         ),
-                      if (_campingChecked &&
-                          _rentTentChecked &&
-                          _tentSize != null)
-                        Text(
-                          'เช่าเต็นท์ ($_tentSize): ${_calculateTentRentalCost().toStringAsFixed(2)} บาท',
-                          style: const TextStyle(
-                            color: kSpotifyTextSecondary,
-                            fontSize: 16.0,
-                          ),
+                      if (_campingChecked && _rentTentChecked)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (_smallTentCount > 0)
+                              Text(
+                                'เช่าเต็นท์แบบเล็ก (2 คน): $_smallTentCount เต็นท์, ${(widget.campsite.tent_rental[0] * _smallTentCount * _nightCount).toStringAsFixed(2)} บาท',
+                                style: const TextStyle(
+                                  color: kSpotifyTextSecondary,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            if (_mediumTentCount > 0)
+                              Text(
+                                'เช่าเต็นท์แบบกลาง (4 คน): $_mediumTentCount เต็นท์, ${(widget.campsite.tent_rental[1] * _mediumTentCount * _nightCount).toStringAsFixed(2)} บาท',
+                                style: const TextStyle(
+                                  color: kSpotifyTextSecondary,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            if (_largeTentCount > 0)
+                              Text(
+                                'เช่าเต็นท์แบบใหญ่ (6 คน): $_largeTentCount เต็นท์, ${(widget.campsite.tent_rental[2] * _largeTentCount * _nightCount).toStringAsFixed(2)} บาท',
+                                style: const TextStyle(
+                                  color: kSpotifyTextSecondary,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                          ],
                         ),
-                      if (_houseChecked && _houseSize != null)
-                        Text(
-                          'เช่าบ้าน ($_houseSize): ${_calculateHouseCost().toStringAsFixed(2)} บาท',
-                          style: const TextStyle(
-                            color: kSpotifyTextSecondary,
-                            fontSize: 16.0,
-                          ),
+                      if (_houseChecked)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (_smallHouseCount > 0)
+                              Text(
+                                'เช่าบ้านพักแบบเล็ก (2-3 คน): $_smallHouseCount หลัง, ${(widget.campsite.house[0] * _smallHouseCount * _nightCount).toStringAsFixed(2)} บาท',
+                                style: const TextStyle(
+                                  color: kSpotifyTextSecondary,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            if (_mediumHouseCount > 0)
+                              Text(
+                                'เช่าบ้านพักแบบกลาง (4-6 คน): $_mediumHouseCount หลัง, ${(widget.campsite.house[1] * _mediumHouseCount * _nightCount).toStringAsFixed(2)} บาท',
+                                style: const TextStyle(
+                                  color: kSpotifyTextSecondary,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            if (_largeHouseCount > 0)
+                              Text(
+                                'เช่าบ้านพักแบบใหญ่ (8-10 คน): $_largeHouseCount หลัง, ${(widget.campsite.house[2] * _largeHouseCount * _nightCount).toStringAsFixed(2)} บาท',
+                                style: const TextStyle(
+                                  color: kSpotifyTextSecondary,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                          ],
                         ),
                     ],
                   ),
@@ -664,8 +825,8 @@ class _PackYourBagsState extends State<PackYourBags> {
                           widget.campsite.name,
                           _calculateTotalCost(),
                           _enterFeeCalculate(),
-                          _calculateTentRentalCost(),
-                          _calculateHouseCost(),
+                          tentcost,
+                          housecost,
                           _calculateCampingFee());
                       Navigator.push(
                         context,
@@ -674,14 +835,14 @@ class _PackYourBagsState extends State<PackYourBags> {
                                   Exp: widget.Exp,
                                   totalCost: _calculateTotalCost(),
                                   enterFee: _enterFeeCalculate(),
-                                  tentRental: _calculateTentRentalCost(),
-                                  house: _calculateHouseCost(),
+                                  tentRental: tentcost,
+                                  house: housecost,
                                   campingFee: _calculateCampingFee(),
                                   campsite: widget.campsite,
                                   auth: widget.auth,
                                   user: widget.user,
                                 )),
-                      );
+                      );print("ค่ากางเต้น ${tentcost}");
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
