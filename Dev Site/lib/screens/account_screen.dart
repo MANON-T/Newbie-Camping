@@ -42,6 +42,141 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  List<String> selectedTags = [];
+  final List<Map<String, String>> tagOptions = [
+    {
+      'tag': '#CampLover',
+      'description': 'สำหรับผู้ที่หลงใหลในการตั้งแคมป์เป็นชีวิตจิตใจ'
+    },
+    {
+      'tag': '#NatureExplorer',
+      'description': 'สำหรับผู้ที่ชอบสำรวจธรรมชาติและสถานที่ใหม่ๆ'
+    },
+    {'tag': '#WildCook', 'description': 'สำหรับผู้ที่ชอบทำอาหารกลางแจ้ง'},
+    {
+      'tag': '#MountainClimber',
+      'description': 'สำหรับผู้ที่ชอบปีนเขาและตั้งแคมป์บนภูเขา'
+    },
+    {'tag': '#BeachCamper', 'description': 'สำหรับผู้ที่ชอบตั้งแคมป์ที่ชายหาด'},
+    {'tag': '#SoloCamper', 'description': 'สำหรับผู้ที่ชอบการตั้งแคมป์คนเดียว'},
+    {
+      'tag': '#FamilyCamper',
+      'description': 'สำหรับผู้ที่ชอบตั้งแคมป์กับครอบครัว'
+    },
+    {
+      'tag': '#EcoFriendlyCamper',
+      'description':
+          'สำหรับผู้ที่ใส่ใจเรื่องสิ่งแวดล้อมและการตั้งแคมป์แบบรักษ์โลก'
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTags();
+  }
+
+  void _loadTags() async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('user')
+          .doc(widget.user)
+          .get();
+      if (snapshot.exists) {
+        var userData = snapshot.data() as Map<String, dynamic>;
+        if (userData.containsKey('tag')) {
+          setState(() {
+            selectedTags = List<String>.from(userData['tag']);
+          });
+        }
+      }
+    } catch (e) {
+      print("Failed to load tags: $e");
+    }
+  }
+
+  void _showTagSelectionDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text(
+                  'เลือกแท็กที่เข้ากับคุณเพื่อให้ระบบสามารถแนะนำข้อมูลที่คุณสนใจได้มากขึ้น'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: tagOptions.map((tagOption) {
+                    bool isSelected = selectedTags.contains(tagOption['tag']);
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (isSelected) {
+                            selectedTags.remove(tagOption['tag']);
+                          } else if (selectedTags.length < 3) {
+                            if (tagOption['tag'] != null) {
+                              selectedTags
+                                  .add(tagOption['tag']!); // Add non-null tag
+                            }
+                          }
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4.0),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.green : Colors.blue,
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              tagOption['tag']!,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 16.0),
+                            ),
+                            if (isSelected)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4.0),
+                                child: Text(
+                                  tagOption['description']!,
+                                  style: const TextStyle(
+                                      color: Colors.white70, fontSize: 14.0),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              actions: [
+                Text('${selectedTags.length}/3'),
+                TextButton(
+                  onPressed: () {
+                    FirebaseFirestore.instance
+                        .collection('user')
+                        .doc(widget.user)
+                        .update({'tag': selectedTags}).then((_) {
+                      Navigator.of(context).pop();
+                    }).catchError((error) {
+                      print("Failed to update tags: $error");
+                    });
+                  },
+                  child: const Text('ยืนยัน'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,9 +242,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
                   var userData = snapshot.data!.data() as Map<String, dynamic>;
                   var userName = userData['name'] ?? 'ไม่พบชื่อผู้ใช้';
-                  // var userEmail = userData['email'] ?? 'ไม่พบอีเมลผู้ใช้';
-                  var userTags =
-                      List<String>.from(userData['tag'] ?? []); // ดึงข้อมูล tag
+                  var userTags = List<String>.from(userData['tag'] ?? []);
 
                   return ListView(
                     children: [
@@ -152,279 +285,92 @@ class _AccountScreenState extends State<AccountScreen> {
                         id: widget.user,
                       ),
                       const SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(8.0),
-                        constraints: const BoxConstraints(
-                            minWidth: 0, maxWidth: double.infinity),
-                        decoration: BoxDecoration(
-                          color: kSpotifyAccent,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: const Text(
-                          'สรุปค่าใช้จ่าย',
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
-                        ),
+                        height: 20,
                       ),
                       Budget(
                         auth: widget.auth,
                         user: widget.user,
-                        // campingFee: widget.campingFee,
-                        // house: widget.house,
                         campsite: widget.campsite,
-                        // enterFee: widget.enterFee,
-                        // tentRental: widget.tentRental,
-                        // totalCost: widget.totalCost
-                      )
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                     ],
                   );
-                },
-              ),
+                }),
       ),
     );
   }
 
   Widget _buildUserCard(String userName, List<String> userTags) {
     return Card(
-      color: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-        side: const BorderSide(color: kSpotifyAccent),
-      ),
-      elevation: 5,
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        height: MediaQuery.of(context).size.height * 0.23,
-        decoration: BoxDecoration(
-          image: const DecorationImage(
-            image: AssetImage('images/game-card-wallpaper-preview.jpg'),
-            fit: BoxFit.cover,
-          ),
-          color: Colors.black54,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Icon(
-                    Icons.person,
-                    color: kSpotifyAccent,
-                    size: 24.0,
-                  ),
-                  const SizedBox(width: 10),
-                  GestureDetector(
-                    onTap: () => _showFullId(context, widget.user),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.6,
-                      child: Text(
-                        'ID: ${widget.user}',
-                        style: const TextStyle(
-                          color: kSpotifyBackground,
-                          fontSize: 18.0,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+      color: kSpotifyHighlight,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            leading: const Icon(
+              Icons.account_circle,
+              color: kSpotifyTextPrimary,
+              size: 50,
+            ),
+            title: Text(
+              'ชื่อผู้ใช้: $userName',
+              style: const TextStyle(color: kSpotifyTextPrimary),
+            ),
+            subtitle: userTags.isEmpty
+                ? GestureDetector(
+                    onTap: () {
+                      _showTagSelectionDialog();
+                    },
+                    child: const Text(
+                      'กรุณากดที่นี้เพื่อเลือกแท็ก',
+                      style: TextStyle(color: Colors.red, fontSize: 14.0),
+                    ),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8.0),
+                      Wrap(
+                        spacing: 8.0,
+                        runSpacing: 4.0,
+                        children: userTags.map((tag) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 4.0,
+                              horizontal: 8.0,
+                            ),
+                            decoration: BoxDecoration(
+                              color: kSpotifyAccent,
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            child: Text(
+                              tag,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          );
+                        }).toList(),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              const Divider(color: kSpotifyTextSecondary),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.account_circle,
-                    color: kSpotifyAccent,
-                    size: 24.0,
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: GestureDetector(
-                      onTap: () => _showEditNameDialog(context, userName),
-                      child: Text(
-                        userName,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Flexible(
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.tag,
-                      color: kSpotifyAccent,
-                      size: 24.0,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          // shrinkWrap: true,
-                          child: Row(
-                            children: [
-                              for (var i = 0; i < userTags.length; i++)
-                                Container(
-                                  margin: const EdgeInsets.only(right: 8.0),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 4.0, horizontal: 8.0),
-                                  decoration: BoxDecoration(
-                                    color: getTagColor(
-                                        i), // Use getTagColor function to get the color
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
-                                  child: Text(
-                                    userTags[i],
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                ),
-                            ],
+                      const SizedBox(height: 8.0),
+                      GestureDetector(
+                        onTap: () {
+                          _showTagSelectionDialog();
+                        },
+                        child: const Text(
+                          'แก้ไขแท็ก',
+                          style: TextStyle(
+                            color: kSpotifyAccent,
+                            fontSize: 14.0,
+                            decoration: TextDecoration.underline,
                           ),
                         ),
                       ),
-                    )
-                  ],
-                ),
-              ),
-            ],
+                    ],
+                  ),
           ),
-        ),
+        ],
       ),
-    );
-  }
-
-  Color getTagColor(int index) {
-  List<Color> colors = [
-    Colors.red,
-    Colors.green,
-    Colors.blue,
-    Colors.yellow,
-    Colors.purple,
-    Colors.orange,
-    Colors.pink,
-    Colors.teal,
-    Colors.indigo,
-    Colors.lime,
-  ];
-  
-  return colors[index % colors.length]; // Use the modulo operator to wrap around the list of colors
-}
-
-  void _showEditNameDialog(BuildContext context, String currentName) {
-    final TextEditingController nameController =
-        TextEditingController(text: currentName);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'แก้ไขชื่อผู้ใช้',
-            style: TextStyle(color: kSpotifyTextPrimary),
-          ),
-          content: TextField(
-            controller: nameController,
-            decoration: const InputDecoration(
-              labelText: 'ชื่อผู้ใช้ใหม่',
-              labelStyle: TextStyle(color: kSpotifyTextSecondary),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: kSpotifyAccent),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: kSpotifyAccent),
-              ),
-            ),
-            style: const TextStyle(color: kSpotifyTextPrimary),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child:
-                  const Text('ยกเลิก', style: TextStyle(color: kSpotifyAccent)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child:
-                  const Text('ยืนยัน', style: TextStyle(color: kSpotifyAccent)),
-              onPressed: () async {
-                String newName = nameController.text.trim();
-                if (newName.isNotEmpty) {
-                  await FirebaseFirestore.instance
-                      .collection('user')
-                      .doc(widget.user)
-                      .update({'name': newName});
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
-          backgroundColor: kSpotifyBackground,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-            side: const BorderSide(color: kSpotifyAccent),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showFullId(BuildContext context, String userId) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'User ID',
-            style: TextStyle(color: kSpotifyTextPrimary),
-          ),
-          content: Text(
-            userId,
-            style: const TextStyle(color: kSpotifyTextSecondary),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK', style: TextStyle(color: kSpotifyAccent)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-          backgroundColor: kSpotifyBackground,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-            side: const BorderSide(color: kSpotifyAccent),
-          ),
-        );
-      },
     );
   }
 

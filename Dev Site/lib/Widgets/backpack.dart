@@ -60,10 +60,10 @@ class _BackpackState extends State<Backpack> {
         await _loadBackpackItems(campsite, backpack);
       }
     } catch (e) {
-      setState(() {
-        backpackStatus = "เกิดข้อผิดพลาดในการโหลดข้อมูล";
-        backpackItems = ["เกิดข้อผิดพลาดในการโหลดข้อมูล"];
-      });
+      // setState(() {
+      //   backpackStatus = "เกิดข้อผิดพลาดในการโหลดข้อมูล";
+      //   backpackItems = ["เกิดข้อผิดพลาดในการโหลดข้อมูล"];
+      // });
     }
   }
 
