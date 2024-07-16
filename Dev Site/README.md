@@ -1,5 +1,3 @@
-
-
 # Dev Site
 ฝั่งสำหรับนักพัฒนาที่ต้องการจะอัปเดท ปรับปุง หรือแก้ไขโค้ด
 
@@ -74,7 +72,7 @@ Android package name ของโปรเจคนี้คือ    `com.examp
 |name|string|ชื่อของผู้ใช้|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/name.png)|
 |tentRental|number|ค่าเช่าเต้นของสถานที่ๆผู้ใช้ได้เลือกไว้|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/tentRental.png)|
 |totalCost|number|ค่ารวมของสถานที่ๆผู้ใช้ได้เลือกไว้|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/totalCost.png)|
-
+|tag|array|แท็กของผู้ใช้ : เมื่อเริ่มต้นฟิลด์นี้จะเป็น array ที่มีค่าว่าง โดยจะถูกเพิ่มค่าจากการกดเลือกแท็กผ่านตัวแอป ข้อมูลว่ามีเท็กอะไรบ้างจะแยู่ในหัวข้อถัดๆไป|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/tag.png)|
 > Rules
 
 ![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/Forestore%20Database%20bar/Rules.png)
@@ -136,6 +134,17 @@ Android package name ของโปรเจคนี้คือ    `com.examp
 
 ปัจจัยที่สำคัญที่สุดคือความสะอาดของห้องน้ำซึ่งมีผลต่อความสะดวกสบายและสุขอนามัย โดยให้คะแนนสูงถึง 15 คะแนน ส่วนปัจจัยอื่นๆที่สำคัญเช่น ค่าเข้าผู้ใหญ่, มีบ้านพัก, มีกิจกรรม, ราคาบ้านพัก, และราคาเต้น ได้รับคะแนน 10 คะแนนแต่ละปัจจัย เนื่องจากส่งผลต่อการเลือกสถานที่ตั้งแคมป์เป็นอย่างมาก ส่วนปัจจัยอื่นๆที่มีความสำคัญรองลงมาได้รับคะแนนตามความสำคัญลดหลั่นลงมา
 
+> แท็กทั้งหมดที่ผู้ใช้สามารถเลือกได้
+
+1. **#CampLover** - สำหรับผู้ที่หลงใหลในการตั้งแคมป์เป็นชีวิตจิตใจ
+2. **#NatureExplorer** - สำหรับผู้ที่ชอบสำรวจธรรมชาติและสถานที่ใหม่ๆ
+3. **#WildCook** - สำหรับผู้ที่ชอบทำอาหารกลางแจ้ง
+4. **#MountainClimber** - สำหรับผู้ที่ชอบปีนเขาและตั้งแคมป์บนภูเขา
+5. **#BeachCamper** - สำหรับผู้ที่ชอบตั้งแคมป์ที่ชายหาด
+6. **#SoloCamper** - สำหรับผู้ที่ชอบการตั้งแคมป์คนเดียว
+7. **#FamilyCamper** - สำหรับผู้ที่ชอบตั้งแคมป์กับครอบครัว
+8. **#EcoFriendlyCamper** - สำหรับผู้ที่ใส่ใจเรื่องสิ่งแวดล้อมและการตั้งแคมป์แบบรักษ์โลก
+
 > Firebase  Authentication
 
 เป็นส่วนของตัวเลือกการเข้าสู่ระบบของทาง Firebase โดยโปรเจคนี้ยังมี Authentication แค่ 2 แบบคือ Email/Password และ Anonymous
@@ -149,3 +158,5 @@ android\app\src\main\AndroidManifest.xml
 
 lib/service/api.dart
 บรรทัดที่ 1 : `const String GOOGLE_API_KEY = "YOUR API KEY";`
+
+
