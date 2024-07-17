@@ -91,7 +91,7 @@ class _BackpackState extends State<Backpack> {
         ),
         title: const Text(
           'จัดสัมภาระ',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontFamily: 'Itim'),
         ),
         backgroundColor: kSpotifyBackground,
       ),
@@ -111,21 +111,14 @@ class _BackpackState extends State<Backpack> {
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0),
-                      side: BorderSide(
-                        color: index == 0 ? Colors.orange : Colors.blue,
-                        width: 2.0,
-                      ),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16.0),
                       child: index == 0
                           ? Container(
                               decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      'images/Autumn-Orange-Background-for-Desktop.jpg'),
-                                  fit: BoxFit.cover,
-                                ),
+                                color: Color(
+                                    0xFFF6D465), // ใช้สีพื้นหลังแทนภาพพื้นหลัง
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
@@ -134,17 +127,23 @@ class _BackpackState extends State<Backpack> {
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.all(8.0),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.5),
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                      child: Text(
-                                        'สำหรับมือใหม่',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headlineSmall
-                                            ?.copyWith(color: Colors.black),
+                                      decoration: const BoxDecoration(
+                                          // color: Colors.white.withOpacity(0.5),
+                                          // borderRadius:
+                                          //     BorderRadius.circular(8.0),
+                                          ),
+                                      child: const Text('สำหรับมือใหม่',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 25,
+                                              fontFamily: 'Itim')),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Center(
+                                      child: Image.asset(
+                                        'images/camping.png',
+                                        height: 150,
                                       ),
                                     ),
                                     const SizedBox(height: 8.0),
@@ -177,16 +176,14 @@ class _BackpackState extends State<Backpack> {
                                                   const SizedBox(width: 4.0),
                                                   Expanded(
                                                     child: Text(
-                                                      widget.campsite
-                                                              .newbie_backpack[
-                                                          itemIndex],
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyMedium
-                                                          ?.copyWith(
-                                                              color:
-                                                                  Colors.black),
-                                                    ),
+                                                        widget.campsite
+                                                                .newbie_backpack[
+                                                            itemIndex],
+                                                        style: const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 18,
+                                                            fontFamily:
+                                                                'Itim')),
                                                   ),
                                                 ],
                                               ),
@@ -196,47 +193,52 @@ class _BackpackState extends State<Backpack> {
                                       ),
                                     ),
                                     const SizedBox(height: 16.0),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        String message;
-                                        if (index == 0) {
-                                          message = "สำหรับมือใหม่";
-                                        } else if (index == 1) {
-                                          message = "สำหรับทั่วไป แบบ 1";
-                                        } else {
-                                          message = "สำหรับทั่วไป แบบ 2";
-                                        }
+                                    Center(
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          String message;
+                                          if (index == 0) {
+                                            message = "สำหรับมือใหม่";
+                                          } else if (index == 1) {
+                                            message = "สำหรับทั่วไป แบบ 1";
+                                          } else {
+                                            message = "สำหรับทั่วไป แบบ 2";
+                                          }
 
-                                        _saveBackpack(
-                                            message); // บันทึกข้อมูลไปที่ Firebase
+                                          _saveBackpack(
+                                              message); // บันทึกข้อมูลไปที่ Firebase
 
-                                        // ตรวจสอบค่า Exp ก่อนส่งไปยัง HomeScreen
-                                        String? expValue = widget.Exp;
-                                        print(
-                                            'Exp value before sending to HomeScreen: $expValue');
+                                          // ตรวจสอบค่า Exp ก่อนส่งไปยัง HomeScreen
+                                          String? expValue = widget.Exp;
+                                          print(
+                                              'Exp value before sending to HomeScreen: $expValue');
 
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => HomeScreen(
-                                              auth: widget.auth,
-                                              user: widget.user,
-                                              Exp: expValue,
-                                              totalCost: widget.totalCost,
-                                              enterFee: widget.enterFee,
-                                              tentRental: widget.tentRental,
-                                              house: widget.house,
-                                              campingFee: widget.campingFee,
-                                              message: message,
-                                              barindex: 3,
-                                              campsite: widget.campsite,
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => HomeScreen(
+                                                auth: widget.auth,
+                                                user: widget.user,
+                                                Exp: expValue,
+                                                totalCost: widget.totalCost,
+                                                enterFee: widget.enterFee,
+                                                tentRental: widget.tentRental,
+                                                house: widget.house,
+                                                campingFee: widget.campingFee,
+                                                message: message,
+                                                barindex: 3,
+                                                campsite: widget.campsite,
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                      child: const Text(
-                                        'ยืนยัน',
-                                        style: TextStyle(color: Colors.black),
+                                          );
+                                        },
+                                        child: const Text(
+                                          'ยืนยัน',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18,
+                                              fontFamily: 'Itim'),
+                                        ),
                                       ),
                                     )
                                   ],
@@ -245,11 +247,8 @@ class _BackpackState extends State<Backpack> {
                             )
                           : Container(
                               decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      'images/artwork-digital-art-sky-clouds-hd-wallpaper-preview.jpg'),
-                                  fit: BoxFit.cover,
-                                ),
+                                color: Color(
+                                    0xFFFFB0E2), // ใช้สีพื้นหลังแทนภาพพื้นหลัง
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
@@ -258,21 +257,27 @@ class _BackpackState extends State<Backpack> {
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.all(8.0),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.5),
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
                                       child: Text(
-                                        index == 1
-                                            ? 'สำหรับทั่วไป แบบ 1'
-                                            : 'สำหรับทั่วไป แบบ 2',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headlineSmall
-                                            ?.copyWith(color: Colors.black),
-                                      ),
+                                          index == 1
+                                              ? 'สำหรับทั่วไป แบบ 1'
+                                              : 'สำหรับทั่วไป แบบ 2',
+                                          style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 25,
+                                              fontFamily: 'Itim')),
                                     ),
+                                    const SizedBox(height: 8.0),
+                                    Center(
+                                        child: index == 1
+                                            ? Image.asset(
+                                                'images/camping-chair.png',
+                                                height: 150,
+                                              )
+                                            : Image.asset(
+                                                'images/camping_1.png',
+                                                height: 150,
+                                              )),
                                     const SizedBox(height: 8.0),
                                     Expanded(
                                       child: Container(
@@ -304,20 +309,18 @@ class _BackpackState extends State<Backpack> {
                                                   const SizedBox(width: 4.0),
                                                   Expanded(
                                                     child: Text(
-                                                      index == 1
-                                                          ? widget.campsite
-                                                                  .common_backpack1[
-                                                              itemIndex]
-                                                          : widget.campsite
-                                                                  .common_backpack2[
-                                                              itemIndex],
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyMedium
-                                                          ?.copyWith(
-                                                              color:
-                                                                  Colors.black),
-                                                    ),
+                                                        index == 1
+                                                            ? widget.campsite
+                                                                    .common_backpack1[
+                                                                itemIndex]
+                                                            : widget.campsite
+                                                                    .common_backpack2[
+                                                                itemIndex],
+                                                        style: const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 18,
+                                                            fontFamily:
+                                                                'Itim')),
                                                   ),
                                                 ],
                                               ),
@@ -327,47 +330,52 @@ class _BackpackState extends State<Backpack> {
                                       ),
                                     ),
                                     const SizedBox(height: 16.0),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        String message;
-                                        if (index == 0) {
-                                          message = "สำหรับมือใหม่";
-                                        } else if (index == 1) {
-                                          message = "สำหรับทั่วไป แบบ 1";
-                                        } else {
-                                          message = "สำหรับทั่วไป แบบ 2";
-                                        }
+                                    Center(
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          String message;
+                                          if (index == 0) {
+                                            message = "สำหรับมือใหม่";
+                                          } else if (index == 1) {
+                                            message = "สำหรับทั่วไป แบบ 1";
+                                          } else {
+                                            message = "สำหรับทั่วไป แบบ 2";
+                                          }
 
-                                        _saveBackpack(
-                                            message); // บันทึกข้อมูลไปที่ Firebase
+                                          _saveBackpack(
+                                              message); // บันทึกข้อมูลไปที่ Firebase
 
-                                        // ตรวจสอบค่า Exp ก่อนส่งไปยัง HomeScreen
-                                        String? expValue = widget.Exp;
-                                        print(
-                                            'Exp value before sending to HomeScreen: $expValue');
+                                          // ตรวจสอบค่า Exp ก่อนส่งไปยัง HomeScreen
+                                          String? expValue = widget.Exp;
+                                          print(
+                                              'Exp value before sending to HomeScreen: $expValue');
 
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => HomeScreen(
-                                              auth: widget.auth,
-                                              user: widget.user,
-                                              Exp: expValue,
-                                              totalCost: widget.totalCost,
-                                              enterFee: widget.enterFee,
-                                              tentRental: widget.tentRental,
-                                              house: widget.house,
-                                              campingFee: widget.campingFee,
-                                              message: message,
-                                              barindex: 3,
-                                              campsite: widget.campsite,
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => HomeScreen(
+                                                auth: widget.auth,
+                                                user: widget.user,
+                                                Exp: expValue,
+                                                totalCost: widget.totalCost,
+                                                enterFee: widget.enterFee,
+                                                tentRental: widget.tentRental,
+                                                house: widget.house,
+                                                campingFee: widget.campingFee,
+                                                message: message,
+                                                barindex: 3,
+                                                campsite: widget.campsite,
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                      child: const Text(
-                                        'ยืนยัน',
-                                        style: TextStyle(color: Colors.black),
+                                          );
+                                        },
+                                        child: const Text(
+                                          'ยืนยัน',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18,
+                                              fontFamily: 'Itim'),
+                                        ),
                                       ),
                                     )
                                   ],
@@ -394,20 +402,18 @@ class _BackpackState extends State<Backpack> {
                 borderRadius: BorderRadius.circular(16.0),
                 child: Container(
                   decoration: const BoxDecoration(
-                    color: Colors.black,
+                    color: Color(0xFF13AE70),
                   ),
                   height: 200, // กำหนดความสูงให้กับ Card นี้
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          'ตราปั๋มที่ปลดล๊อก',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(color: Colors.white),
-                        ),
+                      const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text('ตราปั๋มที่ปลดล๊อก',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontFamily: 'Itim')),
                       ),
                       Center(
                         child: Image.asset(

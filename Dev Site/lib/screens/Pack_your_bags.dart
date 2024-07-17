@@ -638,12 +638,15 @@ class _PackYourBagsState extends State<PackYourBags> {
                         Column(
                           children: availableTentSizes.map((size) {
                             int count = 0;
-                            if (size == "แบบเล็ก (2 คน)")
+                            if (size == "แบบเล็ก (2 คน)") {
                               count = _smallTentCount;
-                            if (size == "แบบกลาง (4 คน)")
+                            }
+                            if (size == "แบบกลาง (4 คน)") {
                               count = _mediumTentCount;
-                            if (size == "แบบใหญ่ (6 คน)")
+                            }
+                            if (size == "แบบใหญ่ (6 คน)") {
                               count = _largeTentCount;
+                            }
                             return _buildTentCounter(size, count);
                           }).toList(),
                         ),
@@ -671,12 +674,15 @@ class _PackYourBagsState extends State<PackYourBags> {
                         Column(
                           children: availableHouseSizes.map((size) {
                             int count = 0;
-                            if (size == "แบบเล็ก (2-3 คน)")
+                            if (size == "แบบเล็ก (2-3 คน)") {
                               count = _smallHouseCount;
-                            if (size == "แบบกลาง (4-6 คน)")
+                            }
+                            if (size == "แบบกลาง (4-6 คน)") {
                               count = _mediumHouseCount;
-                            if (size == "แบบใหญ่ (8-10 คน)")
+                            }
+                            if (size == "แบบใหญ่ (8-10 คน)") {
                               count = _largeHouseCount;
+                            }
                             return _buildHouseCounter(size, count);
                           }).toList(),
                         ),
@@ -842,7 +848,7 @@ class _PackYourBagsState extends State<PackYourBags> {
                                   auth: widget.auth,
                                   user: widget.user,
                                 )),
-                      );print("ค่ากางเต้น ${tentcost}");
+                      );print("ค่ากางเต้น $tentcost");
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
