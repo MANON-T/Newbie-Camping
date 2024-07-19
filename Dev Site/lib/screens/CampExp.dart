@@ -24,7 +24,7 @@ class CampExp extends StatelessWidget {
               ),
               const Text(
                 "เลือกตัวเลือกประสบการณ์เพื่อให้ระบบรู้จักคุณมากขึ้น",
-                // style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: TextStyle(fontFamily: 'Itim', fontSize: 17),
               ),
               const SizedBox(
                 height: 20,
@@ -43,7 +43,7 @@ class CampExp extends StatelessWidget {
                 ),
                 label: const Text(
                   "ไม่มีประสบการณ์",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontFamily: 'Itim'),
                 ),
               ),
               const SizedBox(
@@ -63,7 +63,7 @@ class CampExp extends StatelessWidget {
                 ),
                 label: const Text(
                   "มีประสบการณ์",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontFamily: 'Itim'),
                 ),
               ),
             ],

@@ -64,12 +64,12 @@ class _BudgetState extends State<Budget> {
               Text(
                 campsitename,
                 style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                    fontSize: 26,
+                    // fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontFamily: 'Itim'),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               AspectRatio(
                 aspectRatio: 1.3,
                 child: BarChart(
@@ -154,37 +154,27 @@ class _BudgetState extends State<Budget> {
                   Text(
                     'ค่าใช้จ่ายรวม: ฿${totalCost.toStringAsFixed(2)}',
                     style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.blue,
-                    ),
+                        fontSize: 20, color: Colors.blue, fontFamily: 'Itim'),
                   ),
                   Text(
                     'ค่าเข้ารวม: ฿${enterFee.toStringAsFixed(2)}',
                     style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.orange,
-                    ),
+                        fontSize: 20, color: Colors.orange, fontFamily: 'Itim'),
                   ),
                   Text(
                     'ค่าเช้าเต้นรวม: ฿${tentRental.toStringAsFixed(2)}',
                     style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.green,
-                    ),
+                        fontSize: 20, color: Colors.green, fontFamily: 'Itim'),
                   ),
                   Text(
                     'ค่าเช่าบ้านพักรวม: ฿${house.toStringAsFixed(2)}',
                     style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.red,
-                    ),
+                        fontSize: 20, color: Colors.red, fontFamily: 'Itim'),
                   ),
                   Text(
                     'ค่ากางเต้น: ฿${campingFee.toStringAsFixed(2)}',
                     style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.purple,
-                    ),
+                        fontSize: 20, color: Colors.purple, fontFamily: 'Itim'),
                   ),
                 ],
               ),

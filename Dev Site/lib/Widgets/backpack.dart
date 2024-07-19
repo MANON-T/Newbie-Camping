@@ -125,10 +125,10 @@ class _BackpackState extends State<Backpack> {
               Text(
                 backpackStatus,
                 style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: kSpotifyTextPrimary,
-                ),
+                    fontSize: 26,
+                    // fontWeight: FontWeight.bold,
+                    color: kSpotifyTextPrimary,
+                    fontFamily: 'Itim'),
               ),
               const SizedBox(height: 16),
               ...backpackItems.map((item) => ListTile(
@@ -136,7 +136,10 @@ class _BackpackState extends State<Backpack> {
                         const Icon(Icons.check, color: kSpotifyTextPrimary),
                     title: Text(
                       item,
-                      style: const TextStyle(color: kSpotifyTextSecondary),
+                      style: const TextStyle(
+                          color: kSpotifyTextSecondary,
+                          fontFamily: 'Itim',
+                          fontSize: 17),
                     ),
                   )),
             ],

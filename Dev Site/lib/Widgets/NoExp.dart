@@ -28,9 +28,7 @@ class NoExp extends StatelessWidget {
               // ทำให้ข้อความอยู่ตรงกลาง
               child: Text(
                 "แจ้งเตือน",
-                style: TextStyle(
-                  fontSize: 20,
-                ),
+                style: TextStyle(fontSize: 20, fontFamily: 'Itim'),
               ),
             ),
             const Divider(),
@@ -39,7 +37,7 @@ class NoExp extends StatelessWidget {
             ),
             const Text(
               "ระบบจะเสนอข้อมูลที่เป็นประโยชน์สำหรับมือใหม่",
-              style: TextStyle(fontSize: 17),
+              style: TextStyle(fontSize: 17, fontFamily: 'Itim'),
             ),
             const SizedBox(
               height: 30,
@@ -50,7 +48,8 @@ class NoExp extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AuthScreenNo()),
+                    MaterialPageRoute(
+                        builder: (context) => const AuthScreenNo()),
                   );
                 },
                 icon: const Icon(
@@ -59,7 +58,7 @@ class NoExp extends StatelessWidget {
                 ),
                 label: const Text(
                   "ยืนยัน",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontFamily: 'Itim'),
                 ),
                 style: buttonaccept,
               ),

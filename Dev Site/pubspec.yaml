@@ -88,9 +88,6 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: SignikaNegative
-      fonts:
-        - asset: fonts/SignikaNegative-VariableFont_wght.ttf
     - family: Itim
       fonts:
         - asset: fonts/Itim-Regular.ttf

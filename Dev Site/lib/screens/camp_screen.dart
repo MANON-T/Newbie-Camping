@@ -1,12 +1,13 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_4/models/campsite_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../service/database.dart';
 import 'package:flutter_application_4/screens/campsite_screen.dart';
 import 'package:flutter_application_4/Widgets/suggestion.dart';
 import '../service/auth_service.dart';
 import 'package:flutter_application_4/models/user_model.dart';
 
-// ใช้ชุดสีของ Spotify
 const kSpotifyBackground = Color(0xFF121212);
 const kSpotifyAccent = Color(0xFF1DB954);
 const kSpotifyTextPrimary = Color(0xFFFFFFFF);
@@ -18,12 +19,13 @@ class CampScreen extends StatefulWidget {
   final UserModel? user;
   final String? Exp;
   final bool isAnonymous;
-  const CampScreen(
-      {super.key,
-      required this.auth,
-      required this.user,
-      required this.Exp,
-      required this.isAnonymous});
+  const CampScreen({
+    super.key,
+    required this.auth,
+    required this.user,
+    required this.Exp,
+    required this.isAnonymous,
+  });
 
   @override
   State<CampScreen> createState() => _CampScreen();
@@ -32,22 +34,73 @@ class CampScreen extends StatefulWidget {
 class _CampScreen extends State<CampScreen> {
   Database db = Database.instance;
   final int _selectedIndex = 0;
+  List<CampsiteModel> suggestedCampsites = [];
+  CampsiteModel? topRecommendedCampsite;
+
+  late StreamSubscription<DocumentSnapshot> _userTagStreamSubscription;
 
   @override
   void initState() {
     super.initState();
+    _listenToUserTags();
+  }
+
+  void _listenToUserTags() {
+    final uid = widget.auth.currentUser!.uid;
+    _userTagStreamSubscription = FirebaseFirestore.instance
+        .collection('user')
+        .doc(uid)
+        .snapshots()
+        .listen((userDoc) async {
+      List<String> userTags = List.from(userDoc.data()?['tag'] ?? []);
+      if (userTags.isNotEmpty) {
+        suggestedCampsites = await getSuggestedCampsites(userTags);
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _userTagStreamSubscription.cancel();
+    super.dispose();
+  }
+
+  Future<List<CampsiteModel>> getSuggestedCampsites(
+      List<String> userTags) async {
+    QuerySnapshot campsiteSnapshot =
+        await FirebaseFirestore.instance.collection('campsite').get();
+    List<CampsiteModel> suggestedCampsites = [];
+    int maxMatchCount = 0;
+
+    for (QueryDocumentSnapshot doc in campsiteSnapshot.docs) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      List<String> suggesTags = List.from(data['sugges_tag'] ?? []);
+      int matchCount = suggesTags.where((tag) => userTags.contains(tag)).length;
+
+      if (matchCount > maxMatchCount) {
+        maxMatchCount = matchCount;
+        suggestedCampsites = [CampsiteModel.fromDocument(doc)];
+        topRecommendedCampsite = CampsiteModel.fromDocument(doc);
+      } else if (matchCount == maxMatchCount) {
+        suggestedCampsites.add(CampsiteModel.fromDocument(doc));
+      }
+    }
+    return suggestedCampsites;
   }
 
   void _navigateToCampsiteScreen(CampsiteModel campsite) {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => CampsiteScreen(
-              campsite: campsite,
-              auth: widget.auth,
-              user: widget.user,
-              Exp: widget.Exp,
-              isAnonymous: widget.isAnonymous)),
+        builder: (context) => CampsiteScreen(
+          campsite: campsite,
+          auth: widget.auth,
+          user: widget.user,
+          Exp: widget.Exp,
+          isAnonymous: widget.isAnonymous,
+        ),
+      ),
     );
   }
 
@@ -61,18 +114,24 @@ class _CampScreen extends State<CampScreen> {
           '🏕️ ยินดีต้อนรับสู่แคมป์',
           style: TextStyle(
             color: kSpotifyTextPrimary,
-            fontSize: 18.0,
+            fontSize: 20.0,
+            fontFamily: 'Itim',
           ),
         ),
-        automaticallyImplyLeading: false, // Set this to false
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.search, color: kSpotifyTextPrimary),
             onPressed: () {
               showSearch(
-                  context: context,
-                  delegate: CampsiteSearchDelegate(
-                      auth: widget.auth, user: widget.user, Exp: widget.Exp , isAnonymous: widget.isAnonymous));
+                context: context,
+                delegate: CampsiteSearchDelegate(
+                  auth: widget.auth,
+                  user: widget.user,
+                  Exp: widget.Exp,
+                  isAnonymous: widget.isAnonymous,
+                ),
+              );
             },
           ),
         ],
@@ -81,7 +140,7 @@ class _CampScreen extends State<CampScreen> {
         child: IndexedStack(
           index: _selectedIndex,
           children: [
-            StreamBuilder(
+            StreamBuilder<List<CampsiteModel>>(
               stream: db.getAllCampsiteStream(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -99,83 +158,98 @@ class _CampScreen extends State<CampScreen> {
                 }
 
                 final campsites = snapshot.data!;
+                final hasTopRecommendedCampsite =
+                    topRecommendedCampsite != null;
+
+                List<CampsiteModel> displayCampsites = [];
+
+                if (hasTopRecommendedCampsite) {
+                  // Add the top recommended campsite first
+                  displayCampsites.add(topRecommendedCampsite!);
+                  // Add the remaining campsites excluding the top recommended one
+                  displayCampsites.addAll(campsites.where((campsite) =>
+                      campsite.name != topRecommendedCampsite!.name));
+                } else {
+                  // Show all campsites as usual
+                  displayCampsites = campsites;
+                }
+
                 return ListView.builder(
-                  itemCount: campsites.length,
+                  itemCount: displayCampsites.length,
                   itemBuilder: (context, index) {
-                    final campsite = campsites[index];
+                    final campsite = displayCampsites[index];
+                    String recommendationText = '';
+
+                    if (hasTopRecommendedCampsite && index == 0) {
+                      recommendationText = '✨ แนะนำสำหรับคุณ';
+                    } else if (topRecommendedCampsite == null && index == 0) {
+                      recommendationText = '✨ แนะนำ';
+                    }
+
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                         vertical: 4.0,
                         horizontal: 8.0,
                       ),
-                      child: Card(
-                        color: kSpotifyHighlight,
-                        margin: const EdgeInsets.all(4.0),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 120, // ลดขนาดของรูปภาพ
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  image: DecorationImage(
-                                    image: AssetImage(campsite.imageURL),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              if (index == 0)
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 4.0),
-                                  child: Text(
-                                    '✨ แนะนำ',
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                      color: kSpotifyAccent,
-                                      fontWeight: FontWeight.bold,
+                      child: InkWell(
+                        onTap: () {
+                          _navigateToCampsiteScreen(campsite);
+                        },
+                        child: Card(
+                          color: kSpotifyHighlight,
+                          margin: const EdgeInsets.all(4.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    image: DecorationImage(
+                                      image: AssetImage(campsite.imageURL),
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
-                              ListTile(
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 4.0,
-                                  horizontal: 8.0,
-                                ),
-                                title: Text(
-                                  campsite.name,
-                                  style: const TextStyle(
-                                    color: kSpotifyTextPrimary,
-                                    fontSize: 14.0,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  'คะแนน: ${campsite.campscore}',
-                                  style: const TextStyle(
-                                    color: kSpotifyTextSecondary,
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      _navigateToCampsiteScreen(campsite);
-                                    },
-                                    child: const Text(
-                                      'เพิ่มเติม',
+                                if (recommendationText.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4.0),
+                                    child: Text(
+                                      recommendationText,
                                       style: TextStyle(
+                                        fontSize: 17.0,
                                         color: kSpotifyAccent,
-                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Itim',
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ],
+                                ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 4.0,
+                                    horizontal: 8.0,
+                                  ),
+                                  title: Text(
+                                    campsite.name,
+                                    style: const TextStyle(
+                                      color: kSpotifyTextPrimary,
+                                      fontSize: 17.0,
+                                      fontFamily: 'Itim',
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    'คะแนน: ${campsite.campscore}',
+                                    style: const TextStyle(
+                                      color: kSpotifyTextSecondary,
+                                      fontSize: 14.0,
+                                      fontFamily: 'Itim',
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -197,7 +271,10 @@ class CampsiteSearchDelegate extends SearchDelegate {
   final String? Exp;
   final bool isAnonymous;
   CampsiteSearchDelegate(
-      {required this.auth, required this.user, required this.Exp, required this.isAnonymous});
+      {required this.auth,
+      required this.user,
+      required this.Exp,
+      required this.isAnonymous});
 
   Database db = Database.instance;
 
@@ -300,18 +377,24 @@ class CampsiteSearchDelegate extends SearchDelegate {
               return ListTile(
                 title: Text(
                   campsite.name,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(
+                      color: Colors.white, fontFamily: 'Itim', fontSize: 17),
                 ),
                 subtitle: Text(
                   'คะแนน: ${campsite.campscore}',
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(
+                      color: Colors.white, fontFamily: 'Itim', fontSize: 15),
                 ),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => CampsiteScreen(
-                          campsite: campsite, auth: auth, user: user, Exp: Exp , isAnonymous: isAnonymous),
+                          campsite: campsite,
+                          auth: auth,
+                          user: user,
+                          Exp: Exp,
+                          isAnonymous: isAnonymous),
                     ),
                   );
                 },

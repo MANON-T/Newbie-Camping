@@ -5,20 +5,18 @@ import 'package:flutter/material.dart';
 import '../service/auth_service.dart';
 
 const kLoginStyle = TextStyle(
-  fontSize: 30,
-  fontWeight: FontWeight.bold,
-  color: Colors.blue,
-);
+    fontSize: 30,
+    fontWeight: FontWeight.bold,
+    color: Colors.blue,
+    fontFamily: 'Itim');
 
 const kErrorMessage = TextStyle(
   fontSize: 16,
   color: Colors.red,
 );
 
-const kOrStyle = TextStyle(
-  fontSize: 16,
-  color: Colors.orange,
-);
+const kOrStyle =
+    TextStyle(fontSize: 16, color: Colors.orange, fontFamily: 'Itim');
 
 class LoginScreen extends StatefulWidget {
   final AuthService auth;
@@ -127,6 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: emailController,
               decoration: InputDecoration(
                 labelText: 'อีเมล',
+                labelStyle: const TextStyle(fontFamily: 'Itim', fontSize: 17),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
               ),
@@ -142,6 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: passwordController,
                   decoration: InputDecoration(
                     labelText: 'รหัสผ่าน',
+                    labelStyle: const TextStyle(fontFamily: 'Itim', fontSize: 17),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)),
                   ),
@@ -224,7 +224,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: Text(_isRegister ? 'สมัครสมาชิก' : 'เข้าสู่ระบบ'),
+              child: Text(
+                _isRegister ? 'สมัครสมาชิก' : 'เข้าสู่ระบบ',
+                style: const TextStyle(fontFamily: 'Itim', fontSize: 17),
+              ),
             ),
           ],
         ),
@@ -246,9 +249,13 @@ class _LoginScreenState extends State<LoginScreen> {
             });
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: _isRegister ? Colors.grey : Colors.blue,
+            backgroundColor: _isRegister ? Colors.grey : Colors.green,
           ),
-          child: const Text('เข้าสู่ระบบ'),
+          child: const Text(
+            'เข้าสู่ระบบ',
+            style: TextStyle(
+                fontFamily: 'Itim', fontSize: 17, color: Colors.white),
+          ),
         ),
         const SizedBox(width: 20),
         ElevatedButton(
@@ -263,7 +270,11 @@ class _LoginScreenState extends State<LoginScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: _isRegister ? Colors.blue : Colors.grey,
           ),
-          child: const Text('สมัครสมาชิก'),
+          child: const Text(
+            'สมัครสมาชิก',
+            style: TextStyle(
+                fontFamily: 'Itim', fontSize: 17, color: Colors.white),
+          ),
         ),
       ],
     );
@@ -301,7 +312,10 @@ class _LoginScreenState extends State<LoginScreen> {
               });
             }
           },
-          child: const Text('ล็อกอินโดยไม่ระบุชื่อ'),
+          child: const Text(
+            'ล็อกอินโดยไม่ระบุชื่อ',
+            style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+          ),
         ),
       ],
     );

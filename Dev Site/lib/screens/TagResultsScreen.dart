@@ -80,10 +80,10 @@ class _TagResultsScreenState extends State<TagResultsScreen> {
         title: Text(
           widget.tag,
           style: const TextStyle(
-            fontSize: 20.0,
-            color: kSpotifyTextPrimary,
-            fontWeight: FontWeight.bold,
-          ),
+              fontSize: 22.0,
+              color: kSpotifyTextPrimary,
+              // fontWeight: FontWeight.bold,
+              fontFamily: 'Itim'),
         ),
         backgroundColor: kSpotifyBackground,
       ),
@@ -97,74 +97,64 @@ class _TagResultsScreenState extends State<TagResultsScreen> {
               vertical: 4.0,
               horizontal: 8.0,
             ),
-            child: Card(
-              color: kSpotifyHighlight,
-              margin: const EdgeInsets.all(4.0), // ลดระยะของการ์ด
-              child: Padding(
-                padding: const EdgeInsets.all(8.0), // ลดระยะภายในการ์ด
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 120, // ลดขนาดของรูปภาพ
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        image: DecorationImage(
-                          image: AssetImage(campsite.imageURL),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    if (index == 0)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 4.0),
-                        child: Text(
-                          '✨ แนะนำ',
-                          style: TextStyle(
-                            fontSize: 15.0,
-                            color: kSpotifyAccent,
-                            fontWeight: FontWeight.bold,
+            child: InkWell(
+              onTap: () {
+                _navigateToCampsiteScreen(campsite);
+              },
+              child: Card(
+                color: kSpotifyHighlight,
+                margin: const EdgeInsets.all(4.0), // ลดระยะของการ์ด
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0), // ลดระยะภายในการ์ด
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 120, // ลดขนาดของรูปภาพ
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          image: DecorationImage(
+                            image: AssetImage(campsite.imageURL),
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                    ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 8.0,
-                      ),
-                      title: Text(
-                        campsite.name,
-                        style: const TextStyle(
-                          color: kSpotifyTextPrimary,
-                          fontSize: 14.0,
-                        ),
-                      ),
-                      subtitle: Text(
-                        'คะแนน: ${campsite.campscore}',
-                        style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 12.0,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            _navigateToCampsiteScreen(campsite);
-                          },
-                          child: const Text(
-                            'เพิ่มเติม',
+                      if (index == 0)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 4.0),
+                          child: Text(
+                            '✨ แนะนำ',
                             style: TextStyle(
+                              fontSize: 17.0,
                               color: kSpotifyAccent,
-                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Itim',
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
+                      ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 8.0,
+                        ),
+                        title: Text(
+                          campsite.name,
+                          style: const TextStyle(
+                            color: kSpotifyTextPrimary,
+                            fontSize: 17.0,
+                            fontFamily: 'Itim',
+                          ),
+                        ),
+                        subtitle: Text(
+                          'คะแนน: ${campsite.campscore}',
+                          style: const TextStyle(
+                            color: kSpotifyTextSecondary,
+                            fontSize: 14.0,
+                            fontFamily: 'Itim',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

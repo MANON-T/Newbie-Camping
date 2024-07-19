@@ -28,9 +28,7 @@ class HaveExp extends StatelessWidget {
               // ทำให้ข้อความอยู่ตรงกลาง
               child: Text(
                 "แจ้งเตือน",
-                style: TextStyle(
-                  fontSize: 20,
-                ),
+                style: TextStyle(fontSize: 20, fontFamily: 'Itim'),
               ),
             ),
             const Divider(),
@@ -39,11 +37,11 @@ class HaveExp extends StatelessWidget {
             ),
             const Text(
               "ระบบจะเสนอข้อมูลที่จำเป็นเท่านั้น",
-              style: TextStyle(fontSize: 17),
+              style: TextStyle(fontSize: 17, fontFamily: 'Itim'),
             ),
             const Text(
               "และจะตัดรายละเอียดยิบย่อยออก",
-              style: TextStyle(fontSize: 17),
+              style: TextStyle(fontSize: 17, fontFamily: 'Itim'),
             ),
             const SizedBox(
               height: 30,
@@ -64,7 +62,7 @@ class HaveExp extends StatelessWidget {
                 ),
                 label: const Text(
                   "ยืนยัน",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontFamily: 'Itim'),
                 ),
                 style: buttonaccept,
               ),

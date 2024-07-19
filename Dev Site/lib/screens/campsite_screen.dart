@@ -32,7 +32,6 @@ class CampsiteScreen extends StatefulWidget {
 }
 
 class _CampsiteScreenState extends State<CampsiteScreen> {
-  bool _isImageExpanded = false;
 
   // Function to show warning dialog
   void showWarningDialog() {
@@ -44,9 +43,10 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
           title: const Text(
             "สิ่งที่ไม่ควรทำในสถานที่ตั้งแคมป์",
             style: TextStyle(
-              color: kSpotifyTextPrimary,
-              fontWeight: FontWeight.bold,
-            ),
+                color: kSpotifyTextPrimary,
+                // fontWeight: FontWeight.bold,
+                fontFamily: 'Itim',
+                fontSize: 22),
           ),
           content: SingleChildScrollView(
             child: ListBody(
@@ -54,9 +54,9 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
                   .map((warning) => Text(
                         '- $warning',
                         style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 15.0,
-                        ),
+                            color: kSpotifyTextSecondary,
+                            fontSize: 17.0,
+                            fontFamily: 'Itim'),
                       ))
                   .toList(),
             ),
@@ -66,8 +66,7 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
               child: const Text(
                 "ปิด",
                 style: TextStyle(
-                  color: kSpotifyAccent,
-                ),
+                    color: kSpotifyAccent, fontFamily: 'Itim', fontSize: 17),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -119,9 +118,7 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
         title: Text(
           widget.campsite.name,
           style: const TextStyle(
-            color: Color(0xFFFFFFFF),
-            fontSize: 18.0,
-          ),
+              color: Color(0xFFFFFFFF), fontSize: 20.0, fontFamily: 'Itim'),
         ),
         automaticallyImplyLeading: false,
       ),
@@ -130,13 +127,28 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
         children: [
           GestureDetector(
             onTap: () {
-              setState(() {
-                _isImageExpanded = !_isImageExpanded;
-              });
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Dialog(
+                    backgroundColor: Colors.transparent,
+                    child: InteractiveViewer(
+                      panEnabled: true, // Set it to false to prevent panning.
+                      boundaryMargin: const EdgeInsets.all(0),
+                      minScale: 0.5,
+                      maxScale: 4.0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.asset(widget.campsite.imageURL,
+                            fit: BoxFit.cover),
+                      ),
+                    ),
+                  );
+                },
+              );
             },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: _isImageExpanded ? 400 : 200,
+            child: Container(
+              height: 200,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.0),
                 image: DecorationImage(
@@ -151,8 +163,9 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
             'ค่าบริการ 🪙',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+              fontSize: 21.0,
+              // fontWeight: FontWeight.bold,
+              fontFamily: 'Itim'
             ),
           ),
           const SizedBox(height: 8.0),
@@ -160,21 +173,24 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
             "ค่าเข้าผู้ใหญ่: ${widget.campsite.adultEntryFee} บาท",
             style: const TextStyle(
               color: Color(0xFFB3B3B3),
-              fontSize: 15.0,
+              fontSize: 17.0,
+              fontFamily: 'Itim'
             ),
           ),
           Text(
             "ค่าเข้าเด็ก: ${widget.campsite.childEntryFee} บาท",
             style: const TextStyle(
               color: Color(0xFFB3B3B3),
-              fontSize: 15.0,
+              fontSize: 17.0,
+              fontFamily: 'Itim'
             ),
           ),
           Text(
             "รถยนต์: ${widget.campsite.parkingFee} บาท/คัน",
             style: const TextStyle(
               color: Color(0xFFB3B3B3),
-              fontSize: 15.0,
+              fontSize: 17.0,
+              fontFamily: 'Itim'
             ),
           ),
           const SizedBox(height: 16.0),
@@ -182,8 +198,9 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
             'ค่ากางเต้น ⛺',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+              fontSize: 21.0,
+              // fontWeight: FontWeight.bold,
+              fontFamily: 'Itim'
             ),
           ),
           const SizedBox(height: 8.0),
@@ -191,7 +208,8 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
             "เริ่มต้น: ${widget.campsite.campingFee} บาท/คืน",
             style: const TextStyle(
               color: Color(0xFFB3B3B3),
-              fontSize: 15.0,
+              fontSize: 17.0,
+              fontFamily: 'Itim'
             ),
           ),
           const SizedBox(height: 16.0),
@@ -199,8 +217,9 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
             'การบริการ 🐕‍🦺',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+              fontSize: 21.0,
+              // fontWeight: FontWeight.bold,
+              fontFamily: 'Itim'
             ),
           ),
           const SizedBox(height: 8.0),
@@ -210,7 +229,8 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
                 'มีที่พัก:',
                 style: TextStyle(
                   color: Color(0xFFB3B3B3),
-                  fontSize: 15.0,
+                  fontSize: 17.0,
+                  fontFamily: 'Itim'
                 ),
               ),
               const SizedBox(width: 0.0),
@@ -224,7 +244,8 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
                 'มีเต็นท์ให้บริการ:',
                 style: TextStyle(
                   color: Color(0xFFB3B3B3),
-                  fontSize: 15.0,
+                  fontSize: 17.0,
+                  fontFamily: 'Itim'
                 ),
               ),
               const SizedBox(width: 0.0),
@@ -241,8 +262,9 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
             'กิจกรรม 🎭',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+              fontSize: 21.0,
+              // fontWeight: FontWeight.bold,
+              fontFamily: 'Itim'
             ),
           ),
           const SizedBox(height: 8.0),
@@ -251,7 +273,8 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
               'ไม่พบข้อมูล',
               style: TextStyle(
                 color: Color(0xFFB3B3B3),
-                fontSize: 15.0,
+                fontSize: 17.0,
+                fontFamily: 'Itim'
               ),
             )
           else
@@ -266,7 +289,8 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
                     '- ${widget.campsite.activities[index]}',
                     style: const TextStyle(
                       color: Color(0xFFB3B3B3),
-                      fontSize: 15.0,
+                      fontSize: 17.0,
+                      fontFamily: 'Itim'
                     ),
                   ),
                 );
@@ -277,8 +301,9 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
             'ห้องน้ำ 🧼',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+              fontSize: 21.0,
+              // fontWeight: FontWeight.bold,
+              fontFamily: 'Itim'
             ),
           ),
           Row(
@@ -287,7 +312,8 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
                 'ห้องน้ำสะอาด 🛁:',
                 style: TextStyle(
                   color: Color(0xFFB3B3B3),
-                  fontSize: 15.0,
+                  fontSize: 17.0,
+                  fontFamily: 'Itim'
                 ),
               ),
               const SizedBox(width: 0.0),
@@ -301,7 +327,8 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
                 'แยกชายหญิง 🚻:',
                 style: TextStyle(
                   color: Color(0xFFB3B3B3),
-                  fontSize: 15.0,
+                  fontSize: 17.0,
+                  fontFamily: 'Itim'
                 ),
               ),
               const SizedBox(width: 0.0),
@@ -317,8 +344,9 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
             'สัญญานมือถือ 📶',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+              fontSize: 21.0,
+              // fontWeight: FontWeight.bold,
+              fontFamily: 'Itim'
             ),
           ),
           const SizedBox(height: 8.0),
@@ -327,7 +355,8 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
               'ไม่พบข้อมูล',
               style: TextStyle(
                 color: Color(0xFFB3B3B3),
-                fontSize: 15.0,
+                fontSize: 17.0,
+                fontFamily: 'Itim'
               ),
             )
           else
@@ -342,7 +371,8 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
                     widget.campsite.phoneSignal[index],
                     style: const TextStyle(
                       color: Color(0xFFB3B3B3),
-                      fontSize: 15.0,
+                      fontSize: 17.0,
+                      fontFamily: 'Itim'
                     ),
                   ),
                 );
@@ -353,8 +383,9 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
             'ไฟฟ้าต่อพ่วง 🔌',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+              fontSize: 21.0,
+              // fontWeight: FontWeight.bold,
+              fontFamily: 'Itim'
             ),
           ),
           Row(
@@ -363,7 +394,8 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
                 'ไฟฟ้าต่อพ่วง 🔌:',
                 style: TextStyle(
                   color: Color(0xFFB3B3B3),
-                  fontSize: 15.0,
+                  fontSize: 17.0,
+                  fontFamily: 'Itim'
                 ),
               ),
               const SizedBox(width: 0.0),
@@ -380,8 +412,9 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
             'รูปภาพสถานที่ 📷',
             style: TextStyle(
               color: Color(0xFFFFFFFF),
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+              fontSize: 21.0,
+              // fontWeight: FontWeight.bold,
+              fontFamily: 'Itim'
             ),
           ),
           const SizedBox(height: 8.0),
@@ -395,26 +428,52 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
             )
           else
             ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.campsite.campimage.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    height: _isImageExpanded ? 400 : 200,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      image: DecorationImage(
-                        image: AssetImage(widget.campsite.campimage[index]),
-                        fit: BoxFit.cover,
-                      ),
+  shrinkWrap: true,
+  physics: const NeverScrollableScrollPhysics(),
+  itemCount: widget.campsite.campimage.length,
+  itemBuilder: (context, index) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: GestureDetector(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return Dialog(
+                backgroundColor: Colors.transparent,
+                child: InteractiveViewer(
+                  panEnabled: true,
+                  boundaryMargin: const EdgeInsets.all(0),
+                  minScale: 0.5,
+                  maxScale: 4.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.asset(
+                      widget.campsite.campimage[index],
+                      fit: BoxFit.contain,
                     ),
                   ),
-                );
-              },
-            )
+                ),
+              );
+            },
+          );
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          height: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            image: DecorationImage(
+              image: AssetImage(widget.campsite.campimage[index]),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
+    );
+  },
+)
+
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -437,10 +496,13 @@ class _CampsiteScreenState extends State<CampsiteScreen> {
                   _navigateToPackYourBags(widget.campsite);
                 },
                 icon: const Icon(Icons.shopping_bag, color: Color(0xFFFFFFFF)),
+                heroTag: 'budgets',
                 label: const Text(
                   'เตรียมความพร้อม',
                   style: TextStyle(
                     color: Color(0xFFFFFFFF),
+                    fontSize: 17,
+                    fontFamily: 'Itim'
                   ),
                 ),
                 backgroundColor: kSpotifyAccent,

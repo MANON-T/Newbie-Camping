@@ -34,9 +34,7 @@ class _TipScreen extends State<TipScreen> {
         title: const Text(
           '🥴 เกล็ดความรู้สำหรับคุณ',
           style: TextStyle(
-            color: kSpotifyTextPrimary,
-            fontSize: 18.0,
-          ),
+              color: kSpotifyTextPrimary, fontSize: 20.0, fontFamily: 'Itim'),
         ),
         automaticallyImplyLeading: false,
       ),
@@ -72,55 +70,64 @@ class _TipScreen extends State<TipScreen> {
                       child: Card(
                         color: kSpotifyHighlight,
                         margin: const EdgeInsets.all(4.0),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Image.asset(tip.imageURL),
-                              const SizedBox(height: 8.0),
-                              Text(
-                                tip.topic,
-                                style: const TextStyle(
-                                    color: kSpotifyTextPrimary,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 8.0),
-                              ElevatedButton(
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text(tip.topic),
-                                      content: SizedBox(
-                                        width: double.maxFinite,
-                                        child: SingleChildScrollView(
-                                          child: Text(tip.description),
-                                        ),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('ปิด'),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: kSpotifyAccent,
+                        child: InkWell(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text(
+                                  tip.topic,
+                                  style: const TextStyle(fontFamily: 'Itim'),
                                 ),
-                                child: const Text(
-                                  'อ่าน',
-                                  style: TextStyle(
-                                    color: Colors.black,
+                                content: SizedBox(
+                                  width: double.maxFinite,
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      tip.description,
+                                      style: const TextStyle(fontFamily: 'Itim',fontSize: 16),
+                                    ),
                                   ),
                                 ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('ปิด',style: TextStyle(fontFamily: 'Itim',fontSize: 17),),
+                                  ),
+                                ],
                               ),
-                            ],
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      8.0), // กำหนดความมนของขอบ
+                                  child: SizedBox(
+                                    width: 400.0, // กำหนดความกว้างของรูปภาพ
+                                    height: 200.0, // กำหนดความสูงของรูปภาพ
+                                    child: Image.asset(
+                                      tip.imageURL,
+                                      fit: BoxFit
+                                          .cover, // ปรับขนาดรูปภาพให้พอดีกับขนาดที่กำหนด
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8.0),
+                                Text(
+                                  tip.topic,
+                                  style: const TextStyle(
+                                    color: kSpotifyTextPrimary,
+                                    fontSize: 22.0,
+                                    fontFamily: 'Itim',
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

@@ -53,7 +53,7 @@ class _MapScreenState extends State<MapScreen> {
 
   void _setCustomMarkerIcon() async {
     _currentLocationMarkerIcon = await BitmapDescriptor.asset(
-      const ImageConfiguration(size: Size(48, 48)),
+      const ImageConfiguration(size: Size(40, 40)),
       'images/verified.png',
     );
   }
@@ -68,7 +68,8 @@ class _MapScreenState extends State<MapScreen> {
           '🗺️ แผนที่สถานที่ตั้งแคมป์',
           style: TextStyle(
             color: kSpotifyTextPrimary,
-            fontSize: 18.0,
+            fontSize: 20.0,
+            fontFamily: 'Itim'
           ),
         ),
         automaticallyImplyLeading: false,
@@ -103,6 +104,7 @@ class _MapScreenState extends State<MapScreen> {
             bottom: 20,
             left: 20,
             child: FloatingActionButton(
+              heroTag: '_currentP',
               onPressed: _currentP != null
                   ? () => _cameraToPosition(_currentP!)
                   : null,

@@ -3,9 +3,6 @@ import 'package:flutter_application_4/models/campsite_model.dart';
 import 'package:flutter_application_4/screens/backpack_screen.dart';
 import '../service/auth_service.dart';
 import 'package:flutter_application_4/models/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Use Spotify color scheme
 const kSpotifyBackground = Color(0xFF121212);
@@ -52,45 +49,6 @@ class _PackYourBagsState extends State<PackYourBags> {
   int _smallHouseCount = 0;
   int _mediumHouseCount = 0;
   int _largeHouseCount = 0;
-
-  Future<void> _saveBudget(
-      String campsiteName,
-      double totalCost,
-      double enterFee,
-      double tentRental,
-      double house,
-      double campingFee) async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        await FirebaseFirestore.instance
-            .collection('user')
-            .doc(user.uid)
-            .update({
-          'campsite': campsiteName,
-          'totalCost': totalCost,
-          'enterFee': enterFee,
-          'tentRental': tentRental,
-          'house': house,
-          'campingFee': campingFee
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('ไม่พบผู้ใช้'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('เกิดข้อผิดพลาดในการบันทึกข้อมูล: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
 
   final List<String> _tentSizes = [
     "แบบเล็ก (2 คน)",
@@ -188,9 +146,7 @@ class _PackYourBagsState extends State<PackYourBags> {
           Text(
             size,
             style: const TextStyle(
-              color: kSpotifyTextPrimary,
-              fontSize: 18.0,
-            ),
+                color: kSpotifyTextPrimary, fontSize: 20.0, fontFamily: 'Itim'),
           ),
           Row(
             children: [
@@ -201,9 +157,9 @@ class _PackYourBagsState extends State<PackYourBags> {
               Text(
                 '$count',
                 style: const TextStyle(
-                  color: kSpotifyTextPrimary,
-                  fontSize: 18.0,
-                ),
+                    color: kSpotifyTextPrimary,
+                    fontSize: 20.0,
+                    fontFamily: 'Itim'),
               ),
               IconButton(
                 icon: const Icon(Icons.add, color: kSpotifyAccent),
@@ -225,9 +181,7 @@ class _PackYourBagsState extends State<PackYourBags> {
           Text(
             size,
             style: const TextStyle(
-              color: kSpotifyTextPrimary,
-              fontSize: 18.0,
-            ),
+                color: kSpotifyTextPrimary, fontSize: 20.0, fontFamily: 'Itim'),
           ),
           Row(
             children: [
@@ -238,9 +192,9 @@ class _PackYourBagsState extends State<PackYourBags> {
               Text(
                 '$count',
                 style: const TextStyle(
-                  color: kSpotifyTextPrimary,
-                  fontSize: 18.0,
-                ),
+                    color: kSpotifyTextPrimary,
+                    fontSize: 20.0,
+                    fontFamily: 'Itim'),
               ),
               IconButton(
                 icon: const Icon(Icons.add, color: kSpotifyAccent),
@@ -262,9 +216,7 @@ class _PackYourBagsState extends State<PackYourBags> {
           Text(
             label,
             style: const TextStyle(
-              color: kSpotifyTextPrimary,
-              fontSize: 18.0,
-            ),
+                color: kSpotifyTextPrimary, fontSize: 20.0, fontFamily: 'Itim'),
           ),
           Row(
             children: [
@@ -275,9 +227,9 @@ class _PackYourBagsState extends State<PackYourBags> {
               Text(
                 '$count',
                 style: const TextStyle(
-                  color: kSpotifyTextPrimary,
-                  fontSize: 18.0,
-                ),
+                    color: kSpotifyTextPrimary,
+                    fontSize: 20.0,
+                    fontFamily: 'Itim'),
               ),
               IconButton(
                 icon: const Icon(Icons.add, color: kSpotifyAccent),
@@ -409,16 +361,16 @@ class _PackYourBagsState extends State<PackYourBags> {
             const Text(
               "คำนวนค่าใช้จ่าย",
               style: TextStyle(
-                color: kSpotifyTextPrimary,
-                fontSize: 18.0,
-              ),
+                  color: kSpotifyTextPrimary,
+                  fontSize: 20.0,
+                  fontFamily: 'Itim'),
             ),
             Text(
               'รวม: ${_calculateTotalCost().toStringAsFixed(2)} บาท',
               style: const TextStyle(
-                color: kSpotifyTextPrimary,
-                fontSize: 16.0,
-              ),
+                  color: kSpotifyTextPrimary,
+                  fontSize: 18.0,
+                  fontFamily: 'Itim'),
             ),
           ],
         ),
@@ -446,10 +398,10 @@ class _PackYourBagsState extends State<PackYourBags> {
                           Text(
                             'ค่าเข้า ',
                             style: TextStyle(
-                              color: kSpotifyTextPrimary,
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                color: kSpotifyTextPrimary,
+                                fontSize: 26.0,
+                                // fontWeight: FontWeight.bold,
+                                fontFamily: 'Itim'),
                           ),
                           Text(
                             '💰',
@@ -463,23 +415,23 @@ class _PackYourBagsState extends State<PackYourBags> {
                       Text(
                         _getDetailsText(1), // "ค่าบริการต่อผู้ใหญ่"
                         style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 14.0,
-                        ),
+                            color: kSpotifyTextSecondary,
+                            fontSize: 16.0,
+                            fontFamily: 'Itim'),
                       ),
                       Text(
                         _getDetailsText(2), // "ค่าบริการต่อเด็ก"
                         style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 14.0,
-                        ),
+                            color: kSpotifyTextSecondary,
+                            fontSize: 16.0,
+                            fontFamily: 'Itim'),
                       ),
                       Text(
                         _getDetailsText(3), // "ค่าบริการต่อรถยนต์"
                         style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 14.0,
-                        ),
+                            color: kSpotifyTextSecondary,
+                            fontSize: 16.0,
+                            fontFamily: 'Itim'),
                       ),
                       const SizedBox(height: 20.0),
                       const Divider(color: kSpotifyTextSecondary),
@@ -500,9 +452,9 @@ class _PackYourBagsState extends State<PackYourBags> {
                             const Text(
                               'จำนวนคืน',
                               style: TextStyle(
-                                color: kSpotifyTextPrimary,
-                                fontSize: 18.0,
-                              ),
+                                  color: kSpotifyTextPrimary,
+                                  fontSize: 20.0,
+                                  fontFamily: 'Itim'),
                             ),
                             const SizedBox(height: 10.0),
                             Row(
@@ -516,9 +468,9 @@ class _PackYourBagsState extends State<PackYourBags> {
                                 Text(
                                   '$_nightCount คืน',
                                   style: const TextStyle(
-                                    color: kSpotifyTextPrimary,
-                                    fontSize: 18.0,
-                                  ),
+                                      color: kSpotifyTextPrimary,
+                                      fontSize: 20.0,
+                                      fontFamily: 'Itim'),
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.add,
@@ -551,10 +503,10 @@ class _PackYourBagsState extends State<PackYourBags> {
                           Text(
                             'ค่าที่พัก ',
                             style: TextStyle(
-                              color: kSpotifyTextPrimary,
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                color: kSpotifyTextPrimary,
+                                fontSize: 26.0,
+                                // fontWeight: FontWeight.bold,
+                                fontFamily: 'Itim'),
                           ),
                           Text(
                             '🏕️',
@@ -568,23 +520,23 @@ class _PackYourBagsState extends State<PackYourBags> {
                       Text(
                         'ค่าบริการกางเต็นท์: ${widget.campsite.campingFee} บาท/คืน',
                         style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 14.0,
-                        ),
+                            color: kSpotifyTextSecondary,
+                            fontSize: 16.0,
+                            fontFamily: 'Itim'),
                       ),
                       Text(
                         'เช่าเต็นท์: ${widget.campsite.tentService ? "ให้บริการ" : "ไม่มีบริการ"}',
                         style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 14.0,
-                        ),
+                            color: kSpotifyTextSecondary,
+                            fontSize: 16.0,
+                            fontFamily: 'Itim'),
                       ),
                       Text(
                         'เช่าบ้านพัก: ${widget.campsite.accommodationAvailable ? "ให้บริการ" : "ไม่มีบริการ"}',
                         style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 14.0,
-                        ),
+                            color: kSpotifyTextSecondary,
+                            fontSize: 16.0,
+                            fontFamily: 'Itim'),
                       ),
                       const SizedBox(height: 20.0),
                       const Divider(color: kSpotifyTextSecondary),
@@ -592,9 +544,9 @@ class _PackYourBagsState extends State<PackYourBags> {
                         title: const Text(
                           'ตั้งแคมป์',
                           style: TextStyle(
-                            color: kSpotifyTextPrimary,
-                            fontSize: 18.0,
-                          ),
+                              color: kSpotifyTextPrimary,
+                              fontSize: 20.0,
+                              fontFamily: 'Itim'),
                         ),
                         value: _campingChecked,
                         onChanged: (bool? value) {
@@ -614,9 +566,9 @@ class _PackYourBagsState extends State<PackYourBags> {
                           title: const Text(
                             'ต้องการเช่าเต็นท์',
                             style: TextStyle(
-                              color: kSpotifyTextPrimary,
-                              fontSize: 18.0,
-                            ),
+                                color: kSpotifyTextPrimary,
+                                fontSize: 20.0,
+                                fontFamily: 'Itim'),
                           ),
                           value: _rentTentChecked,
                           onChanged: _campingChecked
@@ -654,9 +606,9 @@ class _PackYourBagsState extends State<PackYourBags> {
                         title: const Text(
                           'เช้าบ้านพัก',
                           style: TextStyle(
-                            color: kSpotifyTextPrimary,
-                            fontSize: 18.0,
-                          ),
+                              color: kSpotifyTextPrimary,
+                              fontSize: 20.0,
+                              fontFamily: 'Itim'),
                         ),
                         value: _houseChecked,
                         onChanged: widget.campsite.accommodationAvailable
@@ -707,10 +659,10 @@ class _PackYourBagsState extends State<PackYourBags> {
                           Text(
                             'รายละเอียด ',
                             style: TextStyle(
-                              color: kSpotifyTextPrimary,
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                color: kSpotifyTextPrimary,
+                                fontSize: 26.0,
+                                // fontWeight: FontWeight.bold,
+                                fontFamily: 'Itim'),
                           ),
                           Text(
                             '📝',
@@ -722,41 +674,41 @@ class _PackYourBagsState extends State<PackYourBags> {
                       ),
                       const SizedBox(height: 10.0),
                       Text(
-                        'จำนวนผู้ใหญ่: $_adultCount คน',
+                        'จำนวนผู้ใหญ่: $_adultCount คน, ${widget.campsite.adultEntryFee * _adultCount} บาท',
                         style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 16.0,
-                        ),
+                            color: kSpotifyTextSecondary,
+                            fontSize: 18.0,
+                            fontFamily: 'Itim'),
                       ),
                       Text(
-                        'จำนวนเด็ก: $_childrenCount คน',
+                        'จำนวนเด็ก: $_childrenCount คน, ${widget.campsite.childEntryFee * _childrenCount} บาท',
                         style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 16.0,
-                        ),
+                            color: kSpotifyTextSecondary,
+                            fontSize: 18.0,
+                            fontFamily: 'Itim'),
                       ),
                       Text(
-                        'จำนวนรถยนต์: $_carCount คัน',
+                        'จำนวนรถยนต์: $_carCount คัน, ${widget.campsite.parkingFee * _carCount} บาท',
                         style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 16.0,
-                        ),
+                            color: kSpotifyTextSecondary,
+                            fontSize: 18.0,
+                            fontFamily: 'Itim'),
                       ),
                       const Divider(color: kSpotifyTextSecondary),
                       Text(
                         'จำนวนคืน: $_nightCount คืน',
                         style: const TextStyle(
-                          color: kSpotifyTextSecondary,
-                          fontSize: 16.0,
-                        ),
+                            color: kSpotifyTextSecondary,
+                            fontSize: 18.0,
+                            fontFamily: 'Itim'),
                       ),
                       if (_campingChecked)
                         Text(
                           'กางเต็นท์: ${widget.campsite.campingFee * _nightCount} บาท',
                           style: const TextStyle(
-                            color: kSpotifyTextSecondary,
-                            fontSize: 16.0,
-                          ),
+                              color: kSpotifyTextSecondary,
+                              fontSize: 18.0,
+                              fontFamily: 'Itim'),
                         ),
                       if (_campingChecked && _rentTentChecked)
                         Column(
@@ -764,27 +716,27 @@ class _PackYourBagsState extends State<PackYourBags> {
                           children: [
                             if (_smallTentCount > 0)
                               Text(
-                                'เช่าเต็นท์แบบเล็ก (2 คน): $_smallTentCount เต็นท์, ${(widget.campsite.tent_rental[0] * _smallTentCount * _nightCount).toStringAsFixed(2)} บาท',
+                                'เช่าเต็นท์แบบเล็ก: $_smallTentCount เต็นท์, ${(widget.campsite.tent_rental[0] * _smallTentCount * _nightCount).toStringAsFixed(2)} บาท',
                                 style: const TextStyle(
-                                  color: kSpotifyTextSecondary,
-                                  fontSize: 16.0,
-                                ),
+                                    color: kSpotifyTextSecondary,
+                                    fontSize: 18.0,
+                                    fontFamily: 'Itim'),
                               ),
                             if (_mediumTentCount > 0)
                               Text(
-                                'เช่าเต็นท์แบบกลาง (4 คน): $_mediumTentCount เต็นท์, ${(widget.campsite.tent_rental[1] * _mediumTentCount * _nightCount).toStringAsFixed(2)} บาท',
+                                'เช่าเต็นท์แบบกลาง: $_mediumTentCount เต็นท์, ${(widget.campsite.tent_rental[1] * _mediumTentCount * _nightCount).toStringAsFixed(2)} บาท',
                                 style: const TextStyle(
-                                  color: kSpotifyTextSecondary,
-                                  fontSize: 16.0,
-                                ),
+                                    color: kSpotifyTextSecondary,
+                                    fontSize: 18.0,
+                                    fontFamily: 'Itim'),
                               ),
                             if (_largeTentCount > 0)
                               Text(
-                                'เช่าเต็นท์แบบใหญ่ (6 คน): $_largeTentCount เต็นท์, ${(widget.campsite.tent_rental[2] * _largeTentCount * _nightCount).toStringAsFixed(2)} บาท',
+                                'เช่าเต็นท์แบบใหญ่: $_largeTentCount เต็นท์, ${(widget.campsite.tent_rental[2] * _largeTentCount * _nightCount).toStringAsFixed(2)} บาท',
                                 style: const TextStyle(
-                                  color: kSpotifyTextSecondary,
-                                  fontSize: 16.0,
-                                ),
+                                    color: kSpotifyTextSecondary,
+                                    fontSize: 18.0,
+                                    fontFamily: 'Itim'),
                               ),
                           ],
                         ),
@@ -794,27 +746,27 @@ class _PackYourBagsState extends State<PackYourBags> {
                           children: [
                             if (_smallHouseCount > 0)
                               Text(
-                                'เช่าบ้านพักแบบเล็ก (2-3 คน): $_smallHouseCount หลัง, ${(widget.campsite.house[0] * _smallHouseCount * _nightCount).toStringAsFixed(2)} บาท',
+                                'เช่าบ้านพักแบบเล็ก: $_smallHouseCount หลัง, ${(widget.campsite.house[0] * _smallHouseCount * _nightCount).toStringAsFixed(2)} บาท',
                                 style: const TextStyle(
-                                  color: kSpotifyTextSecondary,
-                                  fontSize: 16.0,
-                                ),
+                                    color: kSpotifyTextSecondary,
+                                    fontSize: 18.0,
+                                    fontFamily: 'Itim'),
                               ),
                             if (_mediumHouseCount > 0)
                               Text(
-                                'เช่าบ้านพักแบบกลาง (4-6 คน): $_mediumHouseCount หลัง, ${(widget.campsite.house[1] * _mediumHouseCount * _nightCount).toStringAsFixed(2)} บาท',
+                                'เช่าบ้านพักแบบกลาง: $_mediumHouseCount หลัง, ${(widget.campsite.house[1] * _mediumHouseCount * _nightCount).toStringAsFixed(2)} บาท',
                                 style: const TextStyle(
-                                  color: kSpotifyTextSecondary,
-                                  fontSize: 16.0,
-                                ),
+                                    color: kSpotifyTextSecondary,
+                                    fontSize: 18.0,
+                                    fontFamily: 'Itim'),
                               ),
                             if (_largeHouseCount > 0)
                               Text(
-                                'เช่าบ้านพักแบบใหญ่ (8-10 คน): $_largeHouseCount หลัง, ${(widget.campsite.house[2] * _largeHouseCount * _nightCount).toStringAsFixed(2)} บาท',
+                                'เช่าบ้านพักแบบใหญ่: $_largeHouseCount หลัง, ${(widget.campsite.house[2] * _largeHouseCount * _nightCount).toStringAsFixed(2)} บาท',
                                 style: const TextStyle(
-                                  color: kSpotifyTextSecondary,
-                                  fontSize: 16.0,
-                                ),
+                                    color: kSpotifyTextSecondary,
+                                    fontSize: 18.0,
+                                    fontFamily: 'Itim'),
                               ),
                           ],
                         ),
@@ -827,13 +779,6 @@ class _PackYourBagsState extends State<PackYourBags> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      _saveBudget(
-                          widget.campsite.name,
-                          _calculateTotalCost(),
-                          _enterFeeCalculate(),
-                          tentcost,
-                          housecost,
-                          _calculateCampingFee());
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -848,7 +793,7 @@ class _PackYourBagsState extends State<PackYourBags> {
                                   auth: widget.auth,
                                   user: widget.user,
                                 )),
-                      );print("ค่ากางเต้น $tentcost");
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
@@ -856,7 +801,10 @@ class _PackYourBagsState extends State<PackYourBags> {
                     ),
                     child: const Text(
                       'จัดสัมภาระ',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Itim',
+                          fontSize: 17),
                     ),
                   ),
                 )

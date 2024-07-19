@@ -6,6 +6,7 @@ import 'package:flutter_application_4/models/user_model.dart';
 import 'package:flutter_application_4/screens/home_screen.dart';
 import 'package:flutter_application_4/service/auth_service.dart';
 import 'package:flutter_application_4/service/database.dart';
+import 'package:flutter_application_4/models/medal_model.dart'; // เพิ่มการนำเข้า MedalModel
 
 // Use Spotify color scheme
 const kSpotifyBackground = Color(0xFF121212);
@@ -44,6 +45,14 @@ class Backpack extends StatefulWidget {
 
 class _BackpackState extends State<Backpack> {
   Database db = Database.instance;
+  late Future<MedalModel?> _medalFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _medalFuture = db.getMedalByName(widget.campsite
+        .name); // เปลี่ยนค่า 'Example Medal Name' เป็นชื่อที่ต้องการค้นหา
+  }
 
   Future<void> _saveBackpack(String message) async {
     try {
@@ -56,10 +65,52 @@ class _BackpackState extends State<Backpack> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('บันทึกข้อมูลสำเร็จ: $message'),
+            content: Text(
+              'บันทึกข้อมูลสำเร็จ: $message',
+              style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+            ),
             backgroundColor: Colors.green,
           ),
         );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ไม่พบผู้ใช้'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('เกิดข้อผิดพลาดในการบันทึกข้อมูล: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _saveBudget(
+      String campsiteName,
+      double totalCost,
+      double enterFee,
+      double tentRental,
+      double house,
+      double campingFee) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('user')
+            .doc(user.uid)
+            .update({
+          'campsite': campsiteName,
+          'totalCost': totalCost,
+          'enterFee': enterFee,
+          'tentRental': tentRental,
+          'house': house,
+          'campingFee': campingFee
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -205,6 +256,14 @@ class _BackpackState extends State<Backpack> {
                                             message = "สำหรับทั่วไป แบบ 2";
                                           }
 
+                                          _saveBudget(
+                                              widget.campsite.name,
+                                              widget.totalCost,
+                                              widget.enterFee,
+                                              widget.tentRental,
+                                              widget.house,
+                                              widget.campingFee);
+
                                           _saveBackpack(
                                               message); // บันทึกข้อมูลไปที่ Firebase
 
@@ -342,9 +401,16 @@ class _BackpackState extends State<Backpack> {
                                             message = "สำหรับทั่วไป แบบ 2";
                                           }
 
+                                          _saveBudget(
+                                              widget.campsite.name,
+                                              widget.totalCost,
+                                              widget.enterFee,
+                                              widget.tentRental,
+                                              widget.house,
+                                              widget.campingFee);
+
                                           _saveBackpack(
                                               message); // บันทึกข้อมูลไปที่ Firebase
-
                                           // ตรวจสอบค่า Exp ก่อนส่งไปยัง HomeScreen
                                           String? expValue = widget.Exp;
                                           print(
@@ -416,10 +482,31 @@ class _BackpackState extends State<Backpack> {
                                 fontFamily: 'Itim')),
                       ),
                       Center(
-                        child: Image.asset(
-                          'images/gear.png',
-                          fit: BoxFit.cover,
-                          height: 100, // กำหนดความสูงให้กับรูปภาพ
+                        child: FutureBuilder<MedalModel?>(
+                          future: _medalFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('เกิดข้อผิดพลาด: ${snapshot.error}');
+                            } else if (!snapshot.hasData ||
+                                snapshot.data == null) {
+                              return const Text('ไม่มีตราปั๋มที่ปลดล๊อก');
+                            } else {
+                              MedalModel medal = snapshot.data!;
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    medal.lock,
+                                    fit: BoxFit.cover,
+                                    height: 100,
+                                  ),
+                                ],
+                              );
+                            }
+                          },
                         ),
                       ),
                     ],

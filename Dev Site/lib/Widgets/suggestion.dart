@@ -15,7 +15,6 @@ class Suggestion extends StatelessWidget {
     required this.user,
     required this.Exp,
     required this.isAnonymous,
-
   });
 
   @override
@@ -29,10 +28,10 @@ class Suggestion extends StatelessWidget {
           const Text(
             'แนะนำสำหรับคุณ',
             style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white, // กำหนดสีตัวหนังสือเป็นสีขาว
-            ),
+                fontSize: 20.0,
+                // fontWeight: FontWeight.bold,
+                color: Colors.white, // กำหนดสีตัวหนังสือเป็นสีขาว
+                fontFamily: 'Itim'),
           ),
           const SizedBox(height: 16.0),
           SingleChildScrollView(
@@ -129,9 +128,7 @@ class Suggestion extends StatelessWidget {
         child: Text(
           text,
           style: const TextStyle(
-            fontSize: 14.0,
-            color: Colors.black,
-          ),
+              fontSize: 16.0, color: Colors.black, fontFamily: 'Itim'),
         ),
       ),
     );

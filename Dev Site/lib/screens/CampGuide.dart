@@ -23,11 +23,12 @@ class CampGuide extends StatelessWidget {
               const Text(
                 'แนะนำสถานที่ตั้งแคมป์',
                 style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Itim'),
               ),
-              const Text("สถานที่โปรด สถานที่ดีๆ ที่เหมาะกับคุณ")
+              const Text("สถานที่โปรด สถานที่ดีๆ ที่เหมาะกับคุณ",
+                  style: TextStyle(fontSize: 17, fontFamily: 'Itim'))
             ],
           ),
         ),

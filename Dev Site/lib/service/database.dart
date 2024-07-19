@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_4/models/user_model.dart';
 import 'package:flutter_application_4/models/campsite_model.dart';
 import 'package:flutter_application_4/models/tip_model.dart';
+import 'package:flutter_application_4/models/medal_model.dart';
 
 class Database {
   // static Database instance = Database._();
@@ -10,6 +11,30 @@ class Database {
   static final Database instance = Database._internal();
   Database._internal();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<MedalModel?> getMedalByName(String name) async {
+    try {
+      // ค้นหาเอกสารใน collection 'medal' โดยใช้ค่า field 'name'
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('medal')
+          .where('name', isEqualTo: name)
+          .get();
+
+      // ตรวจสอบว่ามีเอกสารที่ค้นพบหรือไม่
+      if (querySnapshot.docs.isNotEmpty) {
+        // นำข้อมูลเอกสารแรกที่พบมาแปลงเป็น MedalModel
+        DocumentSnapshot doc = querySnapshot.docs.first;
+        return MedalModel.fromDocumentSnapshot(doc);
+      } else {
+        // หากไม่พบเอกสาร ให้คืนค่า null
+        return null;
+      }
+    } catch (e) {
+      // จัดการข้อผิดพลาดที่อาจเกิดขึ้น
+      print('Error fetching medal: $e');
+      return null;
+    }
+  }
 
   Stream<List<CampsiteModel>> getAllCampsiteStream() {
     final reference = FirebaseFirestore.instance.collection('campsite');
@@ -42,7 +67,8 @@ class Database {
   }
 
   Future<void> setUser({required UserModel user}) async {
-    print('User ID: ${user.id}, Exp to save: ${user.exp}'); // พิมพ์ค่า User ID และ Exp ที่จะบันทึก
+    print(
+        'User ID: ${user.id}, Exp to save: ${user.exp}'); // พิมพ์ค่า User ID และ Exp ที่จะบันทึก
     await FirebaseFirestore.instance
         .collection('user')
         .doc(user.id)

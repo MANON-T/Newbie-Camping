@@ -103,7 +103,9 @@ class _AccountScreenState extends State<AccountScreen> {
           builder: (context, setState) {
             return AlertDialog(
               title: const Text(
-                  'เลือกแท็กที่เข้ากับคุณเพื่อให้ระบบสามารถแนะนำข้อมูลที่คุณสนใจได้มากขึ้น'),
+                'เลือกแท็กที่เข้ากับคุณเพื่อให้ระบบสามารถแนะนำข้อมูลที่คุณสนใจได้มากขึ้น',
+                style: TextStyle(fontFamily: 'Itim', fontSize: 20),
+              ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -136,7 +138,9 @@ class _AccountScreenState extends State<AccountScreen> {
                             Text(
                               tagOption['tag']!,
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 16.0),
+                                  color: Colors.white,
+                                  fontSize: 18.0,
+                                  fontFamily: 'Itim'),
                             ),
                             if (isSelected)
                               Padding(
@@ -144,7 +148,9 @@ class _AccountScreenState extends State<AccountScreen> {
                                 child: Text(
                                   tagOption['description']!,
                                   style: const TextStyle(
-                                      color: Colors.white70, fontSize: 14.0),
+                                      color: Colors.white70,
+                                      fontSize: 16.0,
+                                      fontFamily: 'Itim'),
                                 ),
                               ),
                           ],
@@ -155,7 +161,10 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
               ),
               actions: [
-                Text('${selectedTags.length}/3'),
+                Text(
+                  '${selectedTags.length}/3',
+                  style: const TextStyle(fontFamily: 'Itim', fontSize: 17),
+                ),
                 TextButton(
                   onPressed: () {
                     FirebaseFirestore.instance
@@ -167,7 +176,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       print("Failed to update tags: $error");
                     });
                   },
-                  child: const Text('ยืนยัน'),
+                  child: const Text(
+                    'ยืนยัน',
+                    style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+                  ),
                 ),
               ],
             );
@@ -186,9 +198,7 @@ class _AccountScreenState extends State<AccountScreen> {
         title: const Text(
           '🧾 โปรไฟล์ของคุณ',
           style: TextStyle(
-            color: kSpotifyTextPrimary,
-            fontSize: 18.0,
-          ),
+              color: kSpotifyTextPrimary, fontSize: 20.0, fontFamily: 'Itim'),
         ),
         actions: [
           IconButton(
@@ -259,7 +269,10 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                         child: const Text(
                           'บัตรชาวแคมป์',
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontFamily: 'Itim'),
                         ),
                       ),
                       _buildUserCard(userName, userTags),
@@ -276,7 +289,10 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                         child: const Text(
                           'สัมภาระของฉัน',
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontFamily: 'Itim'),
                         ),
                       ),
                       Backpack(
@@ -316,7 +332,8 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
             title: Text(
               'ชื่อผู้ใช้: $userName',
-              style: const TextStyle(color: kSpotifyTextPrimary),
+              style: const TextStyle(
+                  color: kSpotifyTextPrimary, fontFamily: 'Itim', fontSize: 17),
             ),
             subtitle: userTags.isEmpty
                 ? GestureDetector(
@@ -325,7 +342,10 @@ class _AccountScreenState extends State<AccountScreen> {
                     },
                     child: const Text(
                       'กรุณากดที่นี้เพื่อเลือกแท็ก',
-                      style: TextStyle(color: Colors.red, fontSize: 14.0),
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 16.0,
+                          fontFamily: 'Itim'),
                     ),
                   )
                 : Column(
@@ -347,7 +367,10 @@ class _AccountScreenState extends State<AccountScreen> {
                             ),
                             child: Text(
                               tag,
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontFamily: 'Itim'),
                             ),
                           );
                         }).toList(),
@@ -361,7 +384,8 @@ class _AccountScreenState extends State<AccountScreen> {
                           'แก้ไขแท็ก',
                           style: TextStyle(
                             color: kSpotifyAccent,
-                            fontSize: 14.0,
+                            fontSize: 16.0,
+                            fontFamily: 'Itim',
                             decoration: TextDecoration.underline,
                           ),
                         ),
@@ -406,18 +430,18 @@ class _AccountScreenState extends State<AccountScreen> {
                     Text(
                       'Anonymous User',
                       style: TextStyle(
-                        color: kSpotifyTextPrimary,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: kSpotifyTextPrimary,
+                          fontSize: 20.0,
+                          // fontWeight: FontWeight.bold,
+                          fontFamily: 'Itim'),
                     ),
                     SizedBox(height: 5),
                     Text(
                       'กรุณาลงชื่อเข้าใช้เพื่อเข้าถึงข้อมูลโปรไฟล์',
                       style: TextStyle(
-                        color: kSpotifyTextSecondary,
-                        fontSize: 16.0,
-                      ),
+                          color: kSpotifyTextSecondary,
+                          fontSize: 18.0,
+                          fontFamily: 'Itim'),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -437,15 +461,17 @@ class _AccountScreenState extends State<AccountScreen> {
         return AlertDialog(
           title: const Text(
             'การเข้าถึงถูกจำกัด',
-            style: TextStyle(color: kSpotifyTextPrimary),
+            style: TextStyle(color: kSpotifyTextPrimary, fontFamily: 'Itim'),
           ),
           content: const Text(
             'ระบบการ์ดชาวแคมป์ให้บริการเฉพาะผู้ที่เข้าสู่ระบบด้วย Email/Password เท่านั้น.',
-            style: TextStyle(color: kSpotifyTextSecondary),
+            style: TextStyle(
+                color: kSpotifyTextSecondary, fontFamily: 'Itim', fontSize: 17),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK', style: TextStyle(color: kSpotifyAccent)),
+              child: const Text('OK',
+                  style: TextStyle(color: kSpotifyAccent, fontFamily: 'Itim' , fontSize: 17)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

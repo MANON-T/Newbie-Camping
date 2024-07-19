@@ -22,9 +22,15 @@ class CampMate extends StatelessWidget {
               ),
               const Text(
                 "คำนวณค่าใช้จ่าย",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Itim'),
               ),
-              const Text("สะดวก ง่ายดาย ไม่ต้องเสียเวลาคำนวณเอง")
+              const Text(
+                "สะดวก ง่ายดาย ไม่ต้องเสียเวลาคำนวณเอง",
+                style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+              )
             ],
           ),
         ),
@@ -46,7 +52,8 @@ class CampMate extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const CampRewards()),
+                    MaterialPageRoute(
+                        builder: (context) => const CampRewards()),
                   );
                 },
                 child: const Icon(Icons.arrow_forward),

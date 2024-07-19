@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_4/screens/CampExp.dart';
 
-
 class CampRewards extends StatelessWidget {
   const CampRewards({super.key});
 
@@ -23,9 +22,15 @@ class CampRewards extends StatelessWidget {
               ),
               const Text(
                 "สะสมความเป็นตัวคุณ",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Itim'),
               ),
-              const Text("ตั้งแคมป์และรับตราปั้มสุดเป็นเอกลักษณ์")
+              const Text(
+                "ตั้งแคมป์และรับตราปั้มสุดเป็นเอกลักษณ์",
+                style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+              )
             ],
           ),
         ),
