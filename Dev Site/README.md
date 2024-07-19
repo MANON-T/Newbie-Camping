@@ -12,11 +12,12 @@ Android package name ของโปรเจคนี้คือ    `com.examp
 ![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/Forestore%20Database%20bar/Data.png)
 
 ในโปรเจคนี้เราใช้ตัว `Forestore Database` ซึ่งเป็นฐานข้อมูลชนิด `Document Store` ซึ่งมีความต่างจาก `SQL` ดังนั้นจึงขอแนะนำให้ทำความรู้จักกับฐานข้อมูลชนิดนี้เสียก่อนเพื่อให้สามารถใช้งานได้อย่างลื่นไหล
-สำหรับตัวฐานข้อมูลจะมีทั้งหมด 3 Collection ได้แก่
+สำหรับตัวฐานข้อมูลจะมีทั้งหมด 4 Collection ได้แก่
 
  - campsite : Collection สำหรับเก็บข้อมูลของสถานที่ตั้งแคมป์
  - tip : Collection สำหรับเก็บเกล็ดความรู้และบทความต่างๆ
- - user : Collection สำหรับเก็บข้อมูลของสผู้ใช้
+ - user : Collection สำหรับเก็บข้อมูลของผู้ใช้
+ - medal : Collection สำหรับเก็บข้อมูลราปั๋มของแต่ละสถานที่
 
 โดยแต่ละ Collection จะมี Document ID เป็นค่า Auto-ID ที่ทาง Firebase สุ่มมาให้ โดยที่แต่ละ Document ของแต่ละ Collection จะมี Field ดังต่อไปนี้
 
@@ -73,6 +74,24 @@ Android package name ของโปรเจคนี้คือ    `com.examp
 |tentRental|number|ค่าเช่าเต้นของสถานที่ๆผู้ใช้ได้เลือกไว้|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/tentRental.png)|
 |totalCost|number|ค่ารวมของสถานที่ๆผู้ใช้ได้เลือกไว้|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/totalCost.png)|
 |tag|array|แท็กของผู้ใช้ : เมื่อเริ่มต้นฟิลด์นี้จะเป็น array ที่มีค่าว่าง โดยจะถูกเพิ่มค่าจากการกดเลือกแท็กผ่านตัวแอป ข้อมูลว่ามีเท็กอะไรบ้างจะแยู่ในหัวข้อถัดๆไป|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/tag.png)|
+
+ 4. medal
+ 
+|ชื่อ| ชนิดข้อมูล |คำอธิบาย|ตัวอย่าง|
+|--|--|--|--|
+| lock | string | รูปเหรียญเมื่อยังไม่ได้ปลดล๊อก : เป็นการเก็บ path ของรูปภาพเหรียญสำหรับแสดงของเหรียญที่ยังไม่ได้ปลกล๊อก | ![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/medal/lock.png) |
+|name|string|ชื่อสถานที่ : เป็นชื่อของสถานที่าำหรับใช้อ้างอิงถึงตราปั๋มของสถานที่นั้น|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/medal/name.png)|
+|unlock|string|รูปเหรียญเมื่อปลดล๊อกแล้ว : เป็นการเก็บ path ของรูปภาพเหรียญสำหรับแสดงของเหรียญที่ปลกล๊อกแล้ว|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/medal/unlock.png)|
+|user|array|รายชื่อผู้ใช้ที่ปลดล๊อกตราปั๋มแล้ว : ใน array นี้จะเป็นรายชื่อที่ใช้ตรวจสอบว่าผู้ใช้คนใหนปลดล๊อกตราปั๋มไปแล้วป่าง|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/medal/user.png)|
+
+> ความแตกต่างระหว่างคราปั๋มที่ยังไม่ได้ปลดล๊อกกับตราปั๋มที่ปลดล๊อกแล้ว
+
+ 
+| ยังไม่ได้ปลดล๊อก | ปลดล๊อกแล้ว |
+|--|--|
+| ![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Dev%20Site/images/medal_2.png) | ![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Dev%20Site/images/medal_1.png) |
+
+
 > Rules
 
 ![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/Forestore%20Database%20bar/Rules.png)
@@ -97,6 +116,12 @@ Android package name ของโปรเจคนี้คือ    `com.examp
     
 	    // กฎสำหรับคอลเลกชัน tip
 	    match /tip/{tipId} {
+	      allow read: if request.auth != null;
+	      allow write: if request.auth != null && request.auth.uid == 'adminUid';
+	    }
+	    
+		// กฎสำหรับคอลเลกชัน medal
+	    match /medal/{medalId} {
 	      allow read: if request.auth != null;
 	      allow write: if request.auth != null && request.auth.uid == 'adminUid';
 	    }
@@ -158,5 +183,3 @@ android\app\src\main\AndroidManifest.xml
 
 lib/service/api.dart
 บรรทัดที่ 1 : `const String GOOGLE_API_KEY = "YOUR API KEY";`
-
-
