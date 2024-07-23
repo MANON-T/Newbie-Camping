@@ -1,3 +1,4 @@
+
 # Dev Site
 ฝั่งสำหรับนักพัฒนาที่ต้องการจะอัปเดท ปรับปุง หรือแก้ไขโค้ด
 
@@ -75,6 +76,9 @@ Android package name ของโปรเจคนี้คือ    `com.examp
 |tentRental|number|ค่าเช่าเต้นของสถานที่ๆผู้ใช้ได้เลือกไว้|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/tentRental.png)|
 |totalCost|number|ค่ารวมของสถานที่ๆผู้ใช้ได้เลือกไว้|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/totalCost.png)|
 |tag|array|แท็กของผู้ใช้ : เมื่อเริ่มต้นฟิลด์นี้จะเป็น array ที่มีค่าว่าง โดยจะถูกเพิ่มค่าจากการกดเลือกแท็กผ่านตัวแอป ข้อมูลว่ามีเท็กอะไรบ้างจะแยู่ในหัวข้อถัดๆไป|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/tag.png)|
+|avatar|string|รูปโปรไฟล์ : เก็บ path สำหรับรูปโปรไฟล์ของผู้ใช้|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/avatar.png)|
+|background|string|พื้นหลังโปรไฟล์ : เก็บ path สำหรับพื้นหลังโปรไฟล์ของผู้ใช้|![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/user/background.png)|
+
 
  4. medal
  
@@ -170,6 +174,29 @@ Android package name ของโปรเจคนี้คือ    `com.examp
 6. **#SoloCamper** - สำหรับผู้ที่ชอบการตั้งแคมป์คนเดียว
 7. **#FamilyCamper** - สำหรับผู้ที่ชอบตั้งแคมป์กับครอบครัว
 8. **#EcoFriendlyCamper** - สำหรับผู้ที่ใส่ใจเรื่องสิ่งแวดล้อมและการตั้งแคมป์แบบรักษ์โลก
+
+> การเพิ่มรูปโปรไฟล์และพื้นหลังโปรไฟล์
+
+สำหรับการเพิ่มรูปโปรไฟล์นั้นสามารถทำได้ที่ฟังก์ชัน `_editAP` ที่ไฟล์ 
+
+    C:\Flutter Project\flutter_application_4\lib\screens\account_screen.dart
+โดยสามารถแก้ไขได้โดยการเพิ่ม
+
+    _buildImageAvatar('path ของรูปโปรไฟล์ที่ต้องการ'),// เรียกใช้ฟังก์ชัน _buildImageAvatar เพื่อสร้างรูปโปรไฟล์ตามรูปภาพที่ได้ส่งไป
+    const  SizedBox(width:  8),//กำหนดระยะห่างระหว่างรูปโปรไฟล์แต่ละรูปเป็น 8
+
+ตัวอย่างโค้ด
+
+![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/Profile%20fix/Avatar.png)
+
+สำหรับการเพิ่มรูปโปรไฟล์นั้นสามารถทำได้ที่ฟังก์ชัน `_editBT` ที่ไฟล์เดียวกันกับฟังก์ชัน `_editAP`
+โดยสามารถแก้ไขได้โดยการเพิ่ม
+
+    _buildImageTile('path ของพื้นหลังโปรไฟล์ที่ต้องการ',),// เรียกใช้ฟังก์ชัน _buildImageTile เพื่อสร้างพื้นหลังโปรไฟล์ตามรูปภาพที่ได้ส่งไป
+	const  SizedBox(width:  8),//กำหนดระยะห่างระหว่างรูปโปรไฟล์แต่ละรูปเป็น 8
+ตัวอย่างโค้ด
+
+![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Tutorial%20Material/Profile%20fix/Background.png)
 
 > Firebase  Authentication
 
