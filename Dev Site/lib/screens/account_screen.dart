@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../service/auth_service.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_application_4/models/campsite_model.dart';
 import 'package:flutter_application_4/screens/CampGuide.dart';
 import 'package:flutter_application_4/Widgets/backpack.dart';
 import 'package:flutter_application_4/Widgets/budget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 const kSpotifyBackground = Color(0xFF121212);
 const kSpotifyAccent = Color(0xFF1DB954);
@@ -70,10 +72,133 @@ class _AccountScreenState extends State<AccountScreen> {
     },
   ];
 
+  Future<void> saveBackground(String background) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('user')
+            .doc(user.uid)
+            .update({'background': background});
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ไม่พบผู้ใช้'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('เกิดข้อผิดพลาดในการบันทึกข้อมูล: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> saveavatar(String avatar) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('user')
+            .doc(user.uid)
+            .update({'avatar': avatar});
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ไม่พบผู้ใช้'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('เกิดข้อผิดพลาดในการบันทึกข้อมูล: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _loadavatar() async {
+    try {
+      User? user = await FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        DocumentSnapshot doc = await FirebaseFirestore.instance
+            .collection('user')
+            .doc(user.uid)
+            .get();
+
+        String? background = doc.get('avatar') as String?;
+        setState(() {
+          _selectedAvatar = background != null && background.isNotEmpty
+              ? background
+              : 'images/new.png';
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ไม่พบผู้ใช้'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('เกิดข้อผิดพลาดในการดึงข้อมูล: $e'),
+      //     backgroundColor: Colors.red,
+      //   ),
+      // );
+    }
+  }
+
+  Future<void> _loadBackground() async {
+    try {
+      User? user = await FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        DocumentSnapshot doc = await FirebaseFirestore.instance
+            .collection('user')
+            .doc(user.uid)
+            .get();
+
+        String? background = doc.get('background') as String?;
+        setState(() {
+          _selectedImage = background != null && background.isNotEmpty
+              ? background
+              : 'images/Autumn-Orange-Background-for-Desktop.jpg';
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ไม่พบผู้ใช้'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('เกิดข้อผิดพลาดในการดึงข้อมูล: $e'),
+      //     backgroundColor: Colors.red,
+      //   ),
+      // );
+    }
+  }
+
+  String _selectedImage = 'images/Autumn-Orange-Background-for-Desktop.jpg';
+  String _selectedAvatar = 'images/new.png';
+
   @override
   void initState() {
     super.initState();
+    _loadavatar();
     _loadTags();
+    _loadBackground();
   }
 
   void _loadTags() async {
@@ -189,6 +314,236 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
+  void _editAP() async {
+    final selectedAvatar = await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              'แก้ไขรูปโปรไฟล์',
+              style: TextStyle(fontFamily: 'Itim', fontSize: 20),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 200,
+                  child: Stack(
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildImageAvatar('images/new.png'),
+                            const SizedBox(width: 8),
+                            _buildImageAvatar('images/cat.png'),
+                            const SizedBox(height: 8),
+                            _buildImageAvatar('images/cat_1.png'),
+                            const SizedBox(height: 8),
+                            _buildImageAvatar('images/dog.png'),
+                            const SizedBox(height: 8),
+                            _buildImageAvatar('images/panda.png'),
+                            const SizedBox(height: 8),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context, _selectedAvatar);
+                        },
+                        child: const Text(
+                          'ยืนยัน',
+                          style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                        width: 8), // ใช้เพื่อเพิ่มระยะห่างระหว่างปุ่ม
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _showTagSelectionDialog();
+                        },
+                        child: const Text(
+                          'แก้ไขแท็ก',
+                          style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        });
+
+    if (selectedAvatar != null) {
+      setState(() {
+        _selectedAvatar = selectedAvatar;
+        saveavatar(selectedAvatar);
+      });
+    }
+  }
+
+  Widget _buildImageAvatar(String imagePath) {
+    bool isSelected = _selectedAvatar == imagePath;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedAvatar = imagePath;
+        });
+      },
+      child: Stack(
+        children: [
+          Image.asset(
+            imagePath,
+            height: 70,
+            fit: BoxFit.cover,
+          ),
+          if (isSelected)
+            Positioned(
+              top: 0,
+              left: 0,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(10),
+                  ),
+                ),
+                child: const Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _editBT() async {
+    final selectedImage = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'แก้ไขภาพพื้นหลัง',
+            style: TextStyle(fontFamily: 'Itim', fontSize: 20),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 200,
+                child: Stack(
+                  children: [
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildImageTile(
+                            'images/Autumn-Orange-Background-for-Desktop.jpg',
+                          ),
+                          const SizedBox(width: 8),
+                          _buildImageTile(
+                            'images/artwork-digital-art-sky-clouds-hd-wallpaper-preview.jpg',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, _selectedImage);
+                      },
+                      child: const Text(
+                        'ยืนยัน',
+                        style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8), // ใช้เพื่อเพิ่มระยะห่างระหว่างปุ่ม
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _showTagSelectionDialog();
+                      },
+                      child: const Text(
+                        'แก้ไขแท็ก',
+                        style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+
+    if (selectedImage != null) {
+      setState(() {
+        _selectedImage = selectedImage;
+        saveBackground(selectedImage);
+      });
+    }
+  }
+
+  Widget _buildImageTile(String imagePath) {
+    bool isSelected = _selectedImage == imagePath;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedImage = imagePath;
+        });
+      },
+      child: Stack(
+        children: [
+          Image.asset(
+            imagePath,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
+          if (isSelected)
+            Positioned(
+              top: 0,
+              left: 0,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(10),
+                  ),
+                ),
+                child: const Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -259,25 +614,47 @@ class _AccountScreenState extends State<AccountScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(8.0),
-                        constraints: const BoxConstraints(
-                            minWidth: 0, maxWidth: double.infinity),
-                        decoration: BoxDecoration(
-                          color: kSpotifyAccent,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: const Text(
-                          'บัตรชาวแคมป์',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                              fontFamily: 'Itim'),
-                        ),
+                      Stack(
+                        clipBehavior:
+                            Clip.none, // ปรับ clipBehavior เป็น Clip.none
+                        children: [
+                          Container(
+                            child: Container(
+                              height: 200,
+                              padding: const EdgeInsets.all(8.0),
+                              constraints: const BoxConstraints(
+                                  minWidth: 0, maxWidth: double.infinity),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(_selectedImage),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 8.0,
+                            right: 8.0,
+                            child: GestureDetector(
+                              onTap: _editBT,
+                              child: const Icon(
+                                Icons.edit, // ใช้ไอคอนปากกา
+                                color: Colors.white,
+                                size: 24.0,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: -25, // ปรับตำแหน่งจากด้านล่างขึ้นมา
+                            left: 0,
+                            right: 0,
+                            child: _buildUserCard(userName, userTags),
+                          ),
+                        ],
                       ),
-                      _buildUserCard(userName, userTags),
                       const SizedBox(
-                        height: 10,
+                        height: 40,
                       ),
                       Container(
                         padding: const EdgeInsets.all(8.0),
@@ -301,7 +678,23 @@ class _AccountScreenState extends State<AccountScreen> {
                         id: widget.user,
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        constraints: const BoxConstraints(
+                            minWidth: 0, maxWidth: double.infinity),
+                        decoration: BoxDecoration(
+                          color: kSpotifyAccent,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: const Text(
+                          'ค่าใช้จ่ายทริปนี้',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontFamily: 'Itim'),
+                        ),
                       ),
                       Budget(
                         auth: widget.auth,
@@ -325,10 +718,14 @@ class _AccountScreenState extends State<AccountScreen> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: const Icon(
-              Icons.account_circle,
-              color: kSpotifyTextPrimary,
-              size: 50,
+            leading: GestureDetector(
+              onTap: _editAP, // เรียกใช้ฟังก์ชันเมื่อกดที่รูปภาพ
+              child: Image.asset(
+                _selectedAvatar,
+                // color: kSpotifyTextPrimary,
+                width: 50,
+                height: 50,
+              ),
             ),
             title: Text(
               'ชื่อผู้ใช้: $userName',
@@ -341,7 +738,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       _showTagSelectionDialog();
                     },
                     child: const Text(
-                      'กรุณากดที่นี้เพื่อเลือกแท็ก',
+                      'กดที่รูปปากกาบนขวาเพื่อเลือกแท็ก',
                       style: TextStyle(
                           color: Colors.red,
                           fontSize: 16.0,
@@ -381,7 +778,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           _showTagSelectionDialog();
                         },
                         child: const Text(
-                          'แก้ไขแท็ก',
+                          'กดที่รูปปากกาบนขวาแก้ไขแท็ก',
                           style: TextStyle(
                             color: kSpotifyAccent,
                             fontSize: 16.0,
@@ -471,7 +868,8 @@ class _AccountScreenState extends State<AccountScreen> {
           actions: <Widget>[
             TextButton(
               child: const Text('OK',
-                  style: TextStyle(color: kSpotifyAccent, fontFamily: 'Itim' , fontSize: 17)),
+                  style: TextStyle(
+                      color: kSpotifyAccent, fontFamily: 'Itim', fontSize: 17)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

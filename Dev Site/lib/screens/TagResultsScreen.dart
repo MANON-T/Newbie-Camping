@@ -153,6 +153,17 @@ class _TagResultsScreenState extends State<TagResultsScreen> {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 9),
+                        child: Text(
+                          'แท็ก: #${campsite.tag.join(" #")}',
+                          style: const TextStyle(
+                            color: Colors.cyan,
+                            fontFamily: 'Itim',
+                            fontSize: 17,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

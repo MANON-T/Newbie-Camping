@@ -67,7 +67,7 @@ class _BackpackState extends State<Backpack> {
           SnackBar(
             content: Text(
               'บันทึกข้อมูลสำเร็จ: $message',
-              style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+              style: const TextStyle(fontFamily: 'Itim', fontSize: 17),
             ),
             backgroundColor: Colors.green,
           ),

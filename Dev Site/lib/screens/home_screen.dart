@@ -82,6 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
         double campingFee = 0.0;
         String campsite = '';
         List<String> tags = [];
+        String background = 'images/Autumn-Orange-Background-for-Desktop.jpg';
+        String avatar = 'images/new.png';
 
         if (snapshot.exists) {
           // ถ้ามีข้อมูลใน Firestore ใช้ข้อมูลที่มีอยู่
@@ -97,21 +99,26 @@ class _HomeScreenState extends State<HomeScreen> {
           campingFee = data['campingFee'] ?? campingFee;
           campsite = data['campsite'] ?? campsite;
           tags = List<String>.from(data['tag'] ?? []);
+          background = data['background'] ?? background;
+          avatar = data['avatar'] ?? avatar;
         }
 
         // ตั้งค่าข้อมูลผู้ใช้เบื้องต้น
         UserModel user = UserModel(
-            id: currentUser.uid,
-            name: name,
-            email: email,
-            exp: widget.Exp.toString(), // ตรวจสอบ Exp ที่ได้รับมา
-            tag: tags,
-            campingFee: campingFee,
-            campsite: campsite,
-            enterFee: enterFee,
-            house: house,
-            tentRental: tentRental,
-            totalCost: totalCost);
+          id: currentUser.uid,
+          name: name,
+          email: email,
+          exp: widget.Exp.toString(), // ตรวจสอบ Exp ที่ได้รับมา
+          tag: tags,
+          campingFee: campingFee,
+          campsite: campsite,
+          enterFee: enterFee,
+          house: house,
+          tentRental: tentRental,
+          totalCost: totalCost,
+          background: background,
+          avatar: avatar
+        );
 
         await db.setUser(user: user);
       } else {

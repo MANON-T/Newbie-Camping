@@ -219,7 +219,7 @@ class _CampScreen extends State<CampScreen> {
                                         vertical: 4.0),
                                     child: Text(
                                       recommendationText,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 17.0,
                                         color: kSpotifyAccent,
                                         fontFamily: 'Itim',
@@ -245,6 +245,17 @@ class _CampScreen extends State<CampScreen> {
                                       color: kSpotifyTextSecondary,
                                       fontSize: 14.0,
                                       fontFamily: 'Itim',
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 9),
+                                  child: Text(
+                                    'แท็ก: #${campsite.tag.join(" #")}',
+                                    style: const TextStyle(
+                                      color: Colors.cyan,
+                                      fontFamily: 'Itim',
+                                      fontSize: 17,
                                     ),
                                   ),
                                 ),

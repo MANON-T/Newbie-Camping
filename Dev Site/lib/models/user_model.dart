@@ -10,6 +10,8 @@ class UserModel {
   final String name;
   final String email;
   List<String> tag; // เพิ่มตัวแปร tag ที่เป็น array
+  String background;
+  String avatar;
 
   UserModel(
       {required this.id,
@@ -22,7 +24,9 @@ class UserModel {
       required this.enterFee,
       required this.house,
       required this.tentRental,
-      required this.totalCost}); // ปรับ constructor
+      required this.totalCost,
+      required this.background,
+      required this.avatar}); // ปรับ constructor
 
   factory UserModel.fromMap(Map<String, dynamic>? user) {
     if (user != null) {
@@ -38,6 +42,8 @@ class UserModel {
       String campsite = user['campsite'];
       List<String> tag =
           List<String>.from(user['tag'] ?? []); // แปลง tag เป็น List<String>
+      String background = user['background'];
+      String avatar = user['avatar'];
       return UserModel(
           id: id,
           exp: exp,
@@ -49,7 +55,9 @@ class UserModel {
           enterFee: enterFee,
           house: house,
           tentRental: tentRental,
-          totalCost: totalCost);
+          totalCost: totalCost,
+          background: background,
+          avatar: avatar);
     } else {
       throw ArgumentError('Unexpected type for user');
     }
@@ -67,7 +75,9 @@ class UserModel {
       'enterFee': enterFee,
       'house': house,
       'tentRental': tentRental,
-      'totalCost': totalCost
+      'totalCost': totalCost,
+      'background': background,
+      'avatar': avatar
     };
   }
 
@@ -85,7 +95,9 @@ class UserModel {
       'enterFee': enterFee,
       'house': house,
       'tentRental': tentRental,
-      'totalCost': totalCost
+      'totalCost': totalCost,
+      'background': background,
+      'avatar': avatar,
     };
   }
 }

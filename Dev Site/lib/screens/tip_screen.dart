@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_4/models/tip_model.dart';
 import '../service/database.dart';
+import 'package:flutter_application_4/screens/tip_read_screen.dart';
 
 // ใช้ชุดสีของ Spotify
 const kSpotifyBackground = Color(0xFF121212);
@@ -72,31 +73,12 @@ class _TipScreen extends State<TipScreen> {
                         margin: const EdgeInsets.all(4.0),
                         child: InkWell(
                           onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text(
-                                  tip.topic,
-                                  style: const TextStyle(fontFamily: 'Itim'),
-                                ),
-                                content: SizedBox(
-                                  width: double.maxFinite,
-                                  child: SingleChildScrollView(
-                                    child: Text(
-                                      tip.description,
-                                      style: const TextStyle(fontFamily: 'Itim',fontSize: 16),
-                                    ),
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('ปิด',style: TextStyle(fontFamily: 'Itim',fontSize: 17),),
-                                  ),
-                                ],
-                              ),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TipReadScreen(
+                                        tipModel: tip,
+                                      )),
                             );
                           },
                           child: Padding(
