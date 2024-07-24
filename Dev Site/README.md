@@ -1,4 +1,5 @@
 
+
 # Dev Site
 ฝั่งสำหรับนักพัฒนาที่ต้องการจะอัปเดท ปรับปุง หรือแก้ไขโค้ด
 
@@ -127,8 +128,7 @@ Android package name ของโปรเจคนี้คือ    `com.examp
 	    
 		// กฎสำหรับคอลเลกชัน medal
 	    match /medal/{medalId} {
-	      allow read: if request.auth != null;
-	      allow write: if request.auth != null && request.auth.uid == 'adminUid';
+	      allow read, write: if request.auth != null;
 	    }
 	  }
 	}
