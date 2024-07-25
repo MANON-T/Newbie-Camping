@@ -199,8 +199,11 @@ Android package name ของโปรเจคนี้คือ    `com.examp
 > Firebase  Authentication
 
 เป็นส่วนของตัวเลือกการเข้าสู่ระบบของทาง Firebase โดยโปรเจคนี้ยังมี Authentication อยู่ 4 แบบคือ Email/Password,Anonymous,Google,Facebook ซึ่งขั้นตอนนั้นยาวเกินกว่าจะเขียนลงในไฟล์ README นี้ เลยขอแปะลิงค์สำหรับให้ไปศึกษาทำตามกันเอง
+
  [Google Authentication เข้าสู่ระบบด้วย Google](https://www.youtube.com/watch?v=k7TVYn5jwQk)
+ 
  [Facebook Authentication เข้าสู่ระบบด้วย Facebook](https://www.youtube.com/watch?v=AG_hO03Vyto)
+ 
  [แก้ปัญหา Facebook Error app ID วิธีแก้อยู่ในคลิปเวลา 1:53:30](https://youtu.be/VgMzp3-SzuY?t=6810)
  
 > ตั้งค่า GOOGLE MAP API KEY
@@ -208,7 +211,7 @@ Android package name ของโปรเจคนี้คือ    `com.examp
 สำหรับ API ที่ใช้จะมี 2 ตัวคือ Directions API และ Maps SDK for Android เมื่อเลือก API และได้ API Key มาแล้วสามารถนำไปแทนที่โค้ดในส่วนของไฟล์ข้างล่างได้เลย
 
 android\app\src\main\AndroidManifest.xml
-บรรทัดที่ 35 : `android:value="YOUR API KEY"/>`
+บรรทัดที่ 55 : `android:value="YOUR API KEY"/>`
 
 lib/service/api.dart
 บรรทัดที่ 1 : `const String GOOGLE_API_KEY = "YOUR API KEY";`
@@ -217,4 +220,5 @@ lib/service/api.dart
 
 lib/service/api.dart
 บรรทัดที่ 2 : `const String OPENWEATER API KEY = "YOUR API KEY";`
+
 *หมายเหตุหลังจากได้ KEY จากเว็บ Openweather แล้ว จำเป็นต้องรอเวลา 2-3 ชั่วโมง จึงจะสามารถใช้งาน Key ดังกล่าวได้
