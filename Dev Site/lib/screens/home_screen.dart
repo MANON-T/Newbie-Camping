@@ -105,20 +105,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
         // ตั้งค่าข้อมูลผู้ใช้เบื้องต้น
         UserModel user = UserModel(
-          id: currentUser.uid,
-          name: name,
-          email: email,
-          exp: widget.Exp.toString(), // ตรวจสอบ Exp ที่ได้รับมา
-          tag: tags,
-          campingFee: campingFee,
-          campsite: campsite,
-          enterFee: enterFee,
-          house: house,
-          tentRental: tentRental,
-          totalCost: totalCost,
-          background: background,
-          avatar: avatar
-        );
+            id: currentUser.uid,
+            name: name,
+            email: email,
+            exp: widget.Exp.toString(), // ตรวจสอบ Exp ที่ได้รับมา
+            tag: tags,
+            campingFee: campingFee,
+            campsite: campsite,
+            enterFee: enterFee,
+            house: house,
+            tentRental: tentRental,
+            totalCost: totalCost,
+            background: background,
+            avatar: avatar);
 
         await db.setUser(user: user);
       } else {
@@ -142,7 +141,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   .isAnonymous, // ตั้งค่า isAnonymous ที่ถูกต้อง
             ),
             const TipScreen(),
-            MapScreen(campsite: widget.campsite),
+            MapScreen(
+              campsite: widget.campsite,
+              userID: widget.auth.currentUser!.uid,
+            ),
             AccountScreen(
               totalCost: widget.totalCost,
               enterFee: widget.enterFee,

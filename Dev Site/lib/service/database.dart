@@ -53,6 +53,23 @@ class Database {
     });
   }
 
+  Stream<List<MedalModel>> getAllMedalStream() {
+    final reference = FirebaseFirestore.instance.collection('medal');
+    Query query = reference.orderBy('name', descending: true);
+    final snapshots = query.snapshots();
+    return snapshots.map((snapshot) {
+      return snapshot.docs.map((doc) {
+        if (doc.exists) {
+          final data = doc.data() as Map<String, dynamic>;
+          return MedalModel.fromMap(data);
+        } else {
+          // กรณีที่ไม่มีเอกสารหรือเกิดข้อผิดพลาด
+          throw Exception('Document does not exist');
+        }
+      }).toList();
+    });
+  }
+
   Stream<List<TipModel>> getallTipStream() {
     final reference = FirebaseFirestore.instance.collection('tip');
     Query query = reference.orderBy('timestamp', descending: true);

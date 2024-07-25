@@ -7,6 +7,7 @@ import 'package:flutter_application_4/screens/CampGuide.dart';
 import 'package:flutter_application_4/Widgets/backpack.dart';
 import 'package:flutter_application_4/Widgets/budget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_4/screens/StampBookPage.dart';
 
 const kSpotifyBackground = Color(0xFF121212);
 const kSpotifyAccent = Color(0xFF1DB954);
@@ -72,6 +73,11 @@ class _AccountScreenState extends State<AccountScreen> {
     },
   ];
 
+  String _selectedImage = 'images/Autumn-Orange-Background-for-Desktop.jpg';
+  String _selectedAvatar = 'images/new.png';
+  late TextEditingController nameController;
+  String? _username;
+
   Future<void> saveBackground(String background) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -126,7 +132,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Future<void> _loadavatar() async {
     try {
-      User? user = await FirebaseAuth.instance.currentUser;
+      User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         DocumentSnapshot doc = await FirebaseFirestore.instance
             .collection('user')
@@ -159,7 +165,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Future<void> _loadBackground() async {
     try {
-      User? user = await FirebaseAuth.instance.currentUser;
+      User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         DocumentSnapshot doc = await FirebaseFirestore.instance
             .collection('user')
@@ -167,11 +173,15 @@ class _AccountScreenState extends State<AccountScreen> {
             .get();
 
         String? background = doc.get('background') as String?;
+        String? username = doc.get('name') as String?;
         setState(() {
           _selectedImage = background != null && background.isNotEmpty
               ? background
               : 'images/Autumn-Orange-Background-for-Desktop.jpg';
+          _username =
+              username != null && username.isNotEmpty ? username : 'รอข้อมูล';
         });
+        nameController = TextEditingController(text: _username);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -190,15 +200,47 @@ class _AccountScreenState extends State<AccountScreen> {
     }
   }
 
-  String _selectedImage = 'images/Autumn-Orange-Background-for-Desktop.jpg';
-  String _selectedAvatar = 'images/new.png';
-
   @override
   void initState() {
     super.initState();
     _loadavatar();
     _loadTags();
     _loadBackground();
+    nameController = TextEditingController(text: 'รอข้อมูล');
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
+  void _updateName(String newName) async {
+    if (newName.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(widget.user) // ใส่ user id ที่คุณต้องการอัปเดต
+          .update({'name': newName});
+    }
+  }
+
+  Widget _buildNameField() {
+    return TextField(
+      controller: nameController,
+      decoration: const InputDecoration(
+        labelText: 'ชื่อผู้ใช้ใหม่',
+        labelStyle:
+            TextStyle(color: Colors.black, fontFamily: 'Itim', fontSize: 25),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: kSpotifyAccent),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: kSpotifyAccent),
+        ),
+      ),
+      style: const TextStyle(
+          color: Colors.black, fontFamily: 'Itim', fontSize: 17),
+    );
   }
 
   void _loadTags() async {
@@ -327,7 +369,7 @@ class _AccountScreenState extends State<AccountScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
-                  height: 200,
+                  height: 90,
                   child: Stack(
                     children: [
                       SingleChildScrollView(
@@ -350,33 +392,21 @@ class _AccountScreenState extends State<AccountScreen> {
                     ],
                   ),
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context, _selectedAvatar);
-                        },
-                        child: const Text(
-                          'ยืนยัน',
-                          style: TextStyle(fontFamily: 'Itim', fontSize: 17),
-                        ),
-                      ),
+                _buildNameField(),
+                const SizedBox(
+                  height: 8,
+                ),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _updateName(nameController.text.trim());
+                      Navigator.pop(context, _selectedAvatar);
+                    },
+                    child: const Text(
+                      'ยืนยัน',
+                      style: TextStyle(fontFamily: 'Itim', fontSize: 17),
                     ),
-                    const SizedBox(
-                        width: 8), // ใช้เพื่อเพิ่มระยะห่างระหว่างปุ่ม
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _showTagSelectionDialog();
-                        },
-                        child: const Text(
-                          'แก้ไขแท็ก',
-                          style: TextStyle(fontFamily: 'Itim', fontSize: 17),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 )
               ],
             ),
@@ -455,7 +485,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           ),
                           const SizedBox(width: 8),
                           _buildImageTile(
-                            'images/artwork-digital-art-sky-clouds-hd-wallpaper-preview.jpg',
+                            'images/OIG4.jpeg',
                           ),
                         ],
                       ),
@@ -556,21 +586,60 @@ class _AccountScreenState extends State<AccountScreen> {
               color: kSpotifyTextPrimary, fontSize: 20.0, fontFamily: 'Itim'),
         ),
         actions: [
-          IconButton(
+          PopupMenuButton<String>(
             icon: const Icon(
-              Icons.logout,
+              Icons.more_vert,
               color: Colors.white,
               size: 28,
             ),
-            onPressed: () async {
-              await widget.auth.logout();
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const CampGuide()),
-                (route) => false,
-              );
+            onSelected: (String result) async {
+              if (result == 'logout') {
+                await widget.auth.logout();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CampGuide()),
+                  (route) => false,
+                );
+              } else if (result == 'stampbook') {
+                // เพิ่มการทำงานที่เกี่ยวข้องกับตัวเลือก "สมุดตราปั้ม"
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Stampbookpage(
+                            userID: widget.user,
+                          )), // หน้าสมุดตราปั้ม
+                );
+              }
             },
-          )
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'stampbook',
+                child: Row(
+                  children: [
+                    Icon(Icons.book, color: Colors.black),
+                    SizedBox(width: 10),
+                    Text(
+                      'สมุดตราปั้ม',
+                      style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+                    ),
+                  ],
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout, color: Colors.black),
+                    SizedBox(width: 10),
+                    Text(
+                      'ออกจากระบบ',
+                      style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ],
         automaticallyImplyLeading: false,
       ),
@@ -733,17 +802,10 @@ class _AccountScreenState extends State<AccountScreen> {
                   color: kSpotifyTextPrimary, fontFamily: 'Itim', fontSize: 17),
             ),
             subtitle: userTags.isEmpty
-                ? GestureDetector(
-                    onTap: () {
-                      _showTagSelectionDialog();
-                    },
-                    child: const Text(
-                      'กดที่รูปปากกาบนขวาเพื่อเลือกแท็ก',
-                      style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 16.0,
-                          fontFamily: 'Itim'),
-                    ),
+                ? const Text(
+                    'กดที่รูปปากกาบนขวาเพื่อเลือกแท็ก',
+                    style: TextStyle(
+                        color: Colors.red, fontSize: 16.0, fontFamily: 'Itim'),
                   )
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -773,18 +835,13 @@ class _AccountScreenState extends State<AccountScreen> {
                         }).toList(),
                       ),
                       const SizedBox(height: 8.0),
-                      GestureDetector(
-                        onTap: () {
-                          _showTagSelectionDialog();
-                        },
-                        child: const Text(
-                          'กดที่รูปปากกาบนขวาแก้ไขแท็ก',
-                          style: TextStyle(
-                            color: kSpotifyAccent,
-                            fontSize: 16.0,
-                            fontFamily: 'Itim',
-                            decoration: TextDecoration.underline,
-                          ),
+                      const Text(
+                        'กดที่รูปปากกาบนขวาแก้ไขแท็ก',
+                        style: TextStyle(
+                          color: kSpotifyAccent,
+                          fontSize: 16.0,
+                          fontFamily: 'Itim',
+                          decoration: TextDecoration.underline,
                         ),
                       ),
                     ],

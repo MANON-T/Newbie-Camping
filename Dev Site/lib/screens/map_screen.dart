@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_application_4/service/api.dart';
+import 'package:geolocator/geolocator.dart'; // เพิ่ม library สำหรับการคำนวณระยะทาง
 
 // ใช้ชุดสีของ Spotify
 const kSpotifyBackground = Color(0xFF121212);
@@ -16,8 +17,8 @@ const kSpotifyHighlight = Color(0xFF282828);
 
 class MapScreen extends StatefulWidget {
   final CampsiteModel? campsite;
-
-  const MapScreen({super.key, required this.campsite});
+  final String? userID;
+  const MapScreen({super.key, required this.campsite, required this.userID});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -31,6 +32,48 @@ class _MapScreenState extends State<MapScreen> {
   LatLng? _pAppPlex;
   LatLng? _currentP;
   final Set<Marker> _markers = {};
+
+  void _checkAndSaveLocation() {
+    if (_currentP != null && _pAppPlex != null) {
+      double distanceInMeters = Geolocator.distanceBetween(
+        _currentP!.latitude,
+        _currentP!.longitude,
+        _pAppPlex!.latitude,
+        _pAppPlex!.longitude,
+      );
+
+      // สมมุติว่าระยะทางที่ยอมรับได้คือ 50 เมตร
+      if (distanceInMeters < 50) {
+        _saveUserIDToFirebase();
+      }
+    }
+  }
+
+  // ฟังก์ชันบันทึก userID ไปที่ Firebase
+  Future<void> _saveUserIDToFirebase() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    // ค้นหา document ที่ตรงกับเงื่อนไข
+    QuerySnapshot querySnapshot = await firestore
+        .collection('medal')
+        .where('name', isEqualTo: widget.campsite!.name)
+        .get();
+
+    // ตรวจสอบว่าได้รับ document มาอย่างน้อยหนึ่งตัว
+    if (querySnapshot.docs.isNotEmpty) {
+      // สมมุติว่าเราใช้ document แรกที่พบ
+      DocumentSnapshot document = querySnapshot.docs.first;
+
+      // อัปเดต field 'user' ของ document ที่พบ
+      await firestore.collection('medal').doc(document.id).update({
+        'user': FieldValue.arrayUnion([widget.userID])
+      }).catchError((error) {
+        print("Failed to update user ID: $error");
+      });
+    } else {
+      print("No document found with name ${widget.campsite!.name}");
+    }
+  }
 
   Map<PolylineId, Polyline> polylines = {};
   BitmapDescriptor? _currentLocationMarkerIcon;
@@ -67,10 +110,7 @@ class _MapScreenState extends State<MapScreen> {
         title: const Text(
           '🗺️ แผนที่สถานที่ตั้งแคมป์',
           style: TextStyle(
-            color: kSpotifyTextPrimary,
-            fontSize: 20.0,
-            fontFamily: 'Itim'
-          ),
+              color: kSpotifyTextPrimary, fontSize: 20.0, fontFamily: 'Itim'),
         ),
         automaticallyImplyLeading: false,
       ),
@@ -105,9 +145,8 @@ class _MapScreenState extends State<MapScreen> {
             left: 20,
             child: FloatingActionButton(
               heroTag: '_currentP',
-              onPressed: _currentP != null
-                  ? () => _cameraToPosition(_currentP!)
-                  : null,
+              onPressed:
+                  _currentP != null ? () => _cameraToPosition(_currentP!) : null,
               backgroundColor: kSpotifyAccent,
               child: const Icon(Icons.my_location, color: kSpotifyTextPrimary),
             ),
@@ -155,6 +194,7 @@ class _MapScreenState extends State<MapScreen> {
             getPolylinePoints().then((coordinate) {
               generatePolylineFromPoint(coordinate);
             });
+            _checkAndSaveLocation(); // ตรวจสอบตำแหน่งและบันทึกหากจำเป็น
           }
         });
       }

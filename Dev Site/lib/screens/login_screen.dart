@@ -1,7 +1,7 @@
 import 'dart:async';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import '../service/auth_service.dart';
 
 const kLoginStyle = TextStyle(
@@ -35,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController passwordController;
   late StreamController errorController;
   late Stream errorStream;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -64,7 +65,6 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _buildErrorText(),
                 _buildContent(),
               ],
             ),
@@ -72,6 +72,103 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Widget _facebookSignedInButton() {
+    return Center(
+      child: SizedBox(
+        height: 50,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(25.0),
+          child: InkWell(
+            onTap: () {
+              signInWithFacebook();
+            },
+            child: Container(
+              color: Colors.white,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'images/facebook.png', // ใช้โลโก้ Google จาก assets ของคุณ
+                    height: 24.0,
+                    width: 24.0,
+                  ),
+                  const SizedBox(width: 10.0),
+                  const Text(
+                    'เข้าสู่ระบบด้วย Facebook',
+                    style: TextStyle(
+                      fontSize: 17.0,
+                      fontFamily: 'Itim', // เปลี่ยนฟอนต์ตามที่คุณต้องการ
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<UserCredential> signInWithFacebook() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login(
+      permissions: ['email','public_profile','user_birthday'],
+    );
+
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
+
+    // Once signed in, return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  }
+
+  Widget _googleSignedInButton() {
+    return Center(
+      child: SizedBox(
+        height: 50,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(25.0),
+          child: InkWell(
+            onTap: () {
+              _handleGoogleSignedIn();
+            },
+            child: Container(
+              color: Colors.white,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'images/google.png', // ใช้โลโก้ Google จาก assets ของคุณ
+                    height: 24.0,
+                    width: 24.0,
+                  ),
+                  const SizedBox(width: 10.0),
+                  const Text(
+                    'เข้าสู่ระบบด้วย Google',
+                    style: TextStyle(
+                      fontSize: 17.0,
+                      fontFamily: 'Itim', // เปลี่ยนฟอนต์ตามที่คุณต้องการ
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handleGoogleSignedIn() {
+    try {
+      GoogleAuthProvider googleAuthProvider = GoogleAuthProvider();
+      _auth.signInWithProvider(googleAuthProvider);
+    } catch (e) {
+      print(e);
+    }
   }
 
   Widget _buildContent() {
@@ -84,12 +181,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: kLoginStyle,
                 textAlign: TextAlign.center,
               ),
+              _buildErrorText(),
               const SizedBox(height: 30),
               _buildEmailLoginForm(),
               const SizedBox(height: 20),
               _buildSwitchButtons(),
               const SizedBox(height: 20),
               _buildAnonymous(),
+              const SizedBox(height: 10),
+              _googleSignedInButton(),
+              const SizedBox(height: 10),
+              _facebookSignedInButton()
             ],
           );
   }
@@ -141,7 +243,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: passwordController,
                   decoration: InputDecoration(
                     labelText: 'รหัสผ่าน',
-                    labelStyle: const TextStyle(fontFamily: 'Itim', fontSize: 17),
+                    labelStyle:
+                        const TextStyle(fontFamily: 'Itim', fontSize: 17),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)),
                   ),
@@ -313,7 +416,7 @@ class _LoginScreenState extends State<LoginScreen> {
             }
           },
           child: const Text(
-            'ล็อกอินโดยไม่ระบุชื่อ',
+            'ล็อกอินโดยไม่ระบุตัวตน',
             style: TextStyle(fontFamily: 'Itim', fontSize: 17),
           ),
         ),

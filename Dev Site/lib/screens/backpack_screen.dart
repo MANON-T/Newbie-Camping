@@ -499,7 +499,7 @@ class _BackpackState extends State<Backpack> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.asset(
-                                    medal.lock,
+                                    medal.unlock,
                                     fit: BoxFit.cover,
                                     height: 100,
                                   ),
