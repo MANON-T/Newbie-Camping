@@ -1,2 +1,2 @@
 # Demo APK
-ตัวอย่าง application รุ่น Demo
+Application เวอร์ชัน Demo
