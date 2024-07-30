@@ -93,7 +93,7 @@ Android package name ของโปรเจคนี้คือ    `com.examp
  
 | ยังไม่ได้ปลดล๊อก | ปลดล๊อกแล้ว |
 |--|--|
-| ![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Dev%20Site/images/medal_2.png) | ![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Dev%20Site/images/medal_1.png) |
+| ![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Flutter%20Application/images/medal_2.png) | ![enter image description here](https://github.com/MANON-T/Newbie-Camping/blob/main/Flutter%20Application/images/medal_1.png) |
 
 
 > Rules
