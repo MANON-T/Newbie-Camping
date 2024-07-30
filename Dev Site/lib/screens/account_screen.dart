@@ -179,7 +179,7 @@ class _AccountScreenState extends State<AccountScreen> {
               ? background
               : 'images/Autumn-Orange-Background-for-Desktop.jpg';
           _username =
-              username != null && username.isNotEmpty ? username : 'รอข้อมูล';
+              username != null && username.isNotEmpty ? username : 'กดที่รูปโปรไฟล์เพื่อแก้ไขชื่อผู้ใช้';
         });
         nameController = TextEditingController(text: _username);
       } else {
@@ -206,7 +206,7 @@ class _AccountScreenState extends State<AccountScreen> {
     _loadavatar();
     _loadTags();
     _loadBackground();
-    nameController = TextEditingController(text: 'รอข้อมูล');
+    nameController = TextEditingController(text: 'กดที่รูปโปรไฟล์เพื่อแก้ไขชื่อผู้ใช้');
   }
 
   @override

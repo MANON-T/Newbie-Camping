@@ -416,7 +416,7 @@ class _LoginScreenState extends State<LoginScreen> {
             }
           },
           child: const Text(
-            'ล็อกอินโดยไม่ระบุตัวตน',
+            'เข้าสู่ระบบโดยไม่ระบุตัวตน',
             style: TextStyle(fontFamily: 'Itim', fontSize: 17),
           ),
         ),

@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
             .doc(currentUser.uid)
             .get();
 
-        String name = 'รอข้อมูล'; // ค่าเริ่มต้นสำหรับ name
+        String name = 'กดที่รูปโปรไฟล์เพื่อแก้ไขชื่อผู้ใช้'; // ค่าเริ่มต้นสำหรับ name
         double totalCost = 0.0;
         double enterFee = 0.0;
         double tentRental = 0.0;

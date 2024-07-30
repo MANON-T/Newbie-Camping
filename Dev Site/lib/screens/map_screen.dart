@@ -32,6 +32,8 @@ class _MapScreenState extends State<MapScreen> {
   LatLng? _pAppPlex;
   LatLng? _currentP;
   final Set<Marker> _markers = {};
+  bool _isSnackbarShown =
+      false; // ตัวแปรสถานะเพื่อเก็บว่าข้อความได้ถูกแสดงหรือยัง
 
   void _checkAndSaveLocation() {
     if (_currentP != null && _pAppPlex != null) {
@@ -43,7 +45,15 @@ class _MapScreenState extends State<MapScreen> {
       );
 
       // สมมุติว่าระยะทางที่ยอมรับได้คือ 50 เมตร
-      if (distanceInMeters < 50) {
+      if (distanceInMeters < 50 && !_isSnackbarShown) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            "ยินดีด้วยตราปั๋ม ${widget.campsite!.name} ปลดล๊อกแล้ว",
+            style: TextStyle(fontFamily: 'Itim', fontSize: 17),
+          ),
+          backgroundColor: Colors.green,
+        ));
+        _isSnackbarShown = true; // ตั้งค่าเป็น true เมื่อแสดงข้อความแล้ว
         _saveUserIDToFirebase();
       }
     }
@@ -145,8 +155,9 @@ class _MapScreenState extends State<MapScreen> {
             left: 20,
             child: FloatingActionButton(
               heroTag: '_currentP',
-              onPressed:
-                  _currentP != null ? () => _cameraToPosition(_currentP!) : null,
+              onPressed: _currentP != null
+                  ? () => _cameraToPosition(_currentP!)
+                  : null,
               backgroundColor: kSpotifyAccent,
               child: const Icon(Icons.my_location, color: kSpotifyTextPrimary),
             ),
